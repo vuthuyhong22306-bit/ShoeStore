@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="36dp"
+    android:viewportWidth="64"
+    android:viewportHeight="36">
+
+  <!-- Sole Base -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 6,28 C 14,29 28,30 46,29 C 56,28 60,26 58,24 C 55,23 48,23 38,24 C 24,25 10,25 6,26 C 4,26.5 4,27.5 6,28 Z" />
+
+  <!-- Outsole Line -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="2.5"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"
+      android:pathData="M 5,28 C 14,31 32,31 56,29 C 60,28 61,25 57,22 C 50,19 42,20 38,18 C 34,16 32,10 28,7 C 24,4 18,5 16,9 L 12,15 L 7,17 C 4,18 4,21 5,23 Z" />
+
+  <!-- Collar / Laces Line -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="2"
+      android:strokeLineCap="round"
+      android:pathData="M 16,9 C 20,11 26,13 34,15 M 20,13 L 26,17 M 24,10 L 30,14" />
+
+</vector>

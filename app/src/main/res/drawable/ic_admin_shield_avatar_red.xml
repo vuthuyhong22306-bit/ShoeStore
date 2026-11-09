@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="90dp"
+    android:height="100dp"
+    android:viewportWidth="90"
+    android:viewportHeight="100">
+
+  <!-- Shield Base Background (Solid Red) -->
+  <path
+      android:fillColor="#E5192C"
+      android:pathData="M 45,5 L 10,18 V 46 C 10,70 24.5,89 45,95 C 65.5,89 80,70 80,46 V 18 L 45,5 Z" />
+
+  <!-- Person Head (White) -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 45,44 C 50.5,44 55,39.5 55,34 C 55,28.5 50.5,24 45,24 C 39.5,24 35,28.5 35,34 C 35,39.5 39.5,44 45,44 Z" />
+
+  <!-- Person Body Shoulders (White) -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 27,66 C 27,55 35,50 45,50 C 55,50 63,55 63,66 V 70 H 27 Z" />
+
+</vector>
