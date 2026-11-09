@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <!-- Person with visor cap / Staff icon -->
+  <path
+      android:fillColor="#00000000"
+      android:strokeColor="#111111"
+      android:strokeWidth="2"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"
+      android:pathData="M 12,12 C 14.21,12 16,10.21 16,8 C 16,5.79 14.21,4 12,4 C 9.79,4 8,5.79 8,8 C 8,10.21 9.79,12 12,12 Z" />
+  <path
+      android:fillColor="#00000000"
+      android:strokeColor="#111111"
+      android:strokeWidth="2"
+      android:strokeLineCap="round"
+      android:pathData="M 6,20 C 6,16 9,14 12,14 C 15,14 18,16 18,20" />
+  <path
+      android:fillColor="#00000000"
+      android:strokeColor="#111111"
+      android:strokeWidth="2"
+      android:strokeLineCap="round"
+      android:pathData="M 7,6 C 9,4.5 15,4.5 17,6 L 20,6" />
+</vector>

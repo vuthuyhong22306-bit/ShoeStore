@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp">
+
+    <RelativeLayout
+        android:id="@+id/bannerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        android:background="#111111">
+
+        <TextView
+            android:id="@+id/tvBannerTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEW ARRIVAL"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#FFCC80"
+            android:letterSpacing="0.1"
+            android:background="#22FFFFFF"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"/>
+
+        <TextView
+            android:id="@+id/tvBannerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvBannerTag"
+            android:layout_marginTop="8dp"
+            android:text="SNEAKER COLLECTION"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"/>
+
+        <TextView
+            android:id="@+id/tvBannerSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvBannerTitle"
+            android:layout_marginTop="4dp"
+            android:text="Khám phá ngay bộ sưu tập mới nhất"
+            android:textSize="13sp"
+            android:textColor="#F5F5F5"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="👟"
+            android:textSize="48sp"/>
+
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

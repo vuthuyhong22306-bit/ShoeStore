@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,15 +13,49 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShoeStore">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activity.RoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.activity.SplashActivity" />
+        <activity android:name=".ui.activity.LoginActivity" />
+        <activity android:name=".ui.activity.RegisterActivity" />
+        <activity
+            android:name=".ui.activity.StaffLoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.CustomerLoginActivity"
+            android:exported="true" />
+        <activity android:name=".ui.activity.CustomerRegisterActivity" />
+        <activity
+            android:name=".ui.activity.AdminLoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.CustomerMainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.StaffMainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.AdminMainActivity"
+            android:exported="true" />
+        <activity android:name=".ui.activity.ProductDetailActivity" />
+        <activity android:name=".ui.activity.CheckoutActivity" />
+        <activity android:name=".ui.activity.OrderDetailActivity" />
+        <activity android:name=".ui.activity.ManageOrdersActivity" />
+        <activity android:name=".ui.activity.ManageStockActivity" />
+        <activity android:name=".ui.activity.ManageProductsActivity" />
+        <activity android:name=".ui.activity.AddEditProductActivity" />
+        <activity android:name=".ui.activity.ManageCategoriesActivity" />
+        <activity android:name=".ui.activity.StatisticsActivity" />
+        <activity android:name=".MainActivity" />
+
     </application>
 
 </manifest>

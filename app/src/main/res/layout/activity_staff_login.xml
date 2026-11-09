@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- Top-Left Organic Red Fluid Blob -->
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="120dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/bg_red_blob_top"
+        android:contentDescription="Red Top Blob" />
+
+    <!-- Top-Right Soft Pink Background Blob -->
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-40dp"
+        android:layout_marginEnd="-40dp"
+        android:src="@drawable/bg_pink_soft_circle"
+        android:contentDescription="Pink Top Blob" />
+
+    <!-- Bottom-Left Soft Pink Background Blob -->
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginStart="-40dp"
+        android:src="@drawable/bg_pink_soft_circle"
+        android:contentDescription="Pink Bottom Blob" />
+
+    <!-- Bottom-Right Organic Red Fluid Blob -->
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="140dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitEnd"
+        android:src="@drawable/bg_red_blob_bottom"
+        android:contentDescription="Red Bottom Blob" />
+
+    <!-- Main Scroll Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="28dp"
+            android:paddingTop="50dp"
+            android:paddingBottom="40dp"
+            android:gravity="center_horizontal">
+
+            <!-- Brand Title: ShoeStore -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shoe"
+                    android:textSize="40sp"
+                    android:textStyle="bold|italic"
+                    android:textColor="#111111" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Store"
+                    android:textSize="40sp"
+                    android:textStyle="bold|italic"
+                    android:textColor="#E5192C" />
+
+            </LinearLayout>
+
+            <!-- Subtitle: Dành cho nhân viên -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="24dp">
+
+                <View
+                    android:layout_width="36dp"
+                    android:layout_height="1.5dp"
+                    android:background="#111111" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dành cho nhân viên"
+                    android:textSize="13sp"
+                    android:textColor="#222222"
+                    android:letterSpacing="0.06"
+                    android:paddingHorizontal="10dp" />
+
+                <View
+                    android:layout_width="36dp"
+                    android:layout_height="1.5dp"
+                    android:background="#111111" />
+
+            </LinearLayout>
+
+            <!-- Staff Avatar Graphic -->
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_staff_avatar_red"
+                android:contentDescription="Staff Avatar" />
+
+            <!-- Title Heading -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng nhập nhân viên"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#111111"
+                android:gravity="center"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vui lòng đăng nhập để tiếp tục"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="26dp" />
+
+            <!-- Input 1: Tên đăng nhập -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_input_pill_outlined">
+
+                <ImageView
+                    android:id="@+id/ivUserIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="18dp"
+                    android:src="@drawable/ic_person_grey"
+                    android:contentDescription="Username Icon" />
+
+                <EditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/ivUserIcon"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="18dp"
+                    android:background="@null"
+                    android:hint="Tên đăng nhập"
+                    android:textColor="#111111"
+                    android:textColorHint="#999999"
+                    android:textSize="15sp"
+                    android:inputType="textEmailAddress" />
+
+            </RelativeLayout>
+
+            <!-- Input 2: Mật khẩu -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_input_pill_outlined">
+
+                <ImageView
+                    android:id="@+id/ivLockIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="18dp"
+                    android:src="@drawable/ic_lock_grey"
+                    android:contentDescription="Password Icon" />
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/ivLockIcon"
+                    android:layout_toStartOf="@id/btnTogglePassword"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:hint="Mật khẩu"
+                    android:textColor="#111111"
+                    android:textColorHint="#999999"
+                    android:textSize="15sp"
+                    android:inputType="textPassword" />
+
+                <ImageView
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="18dp"
+                    android:src="@drawable/ic_eye_toggle_grey"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Toggle Password" />
+
+            </RelativeLayout>
+
+            <!-- Action Button: Đăng nhập -->
+            <RelativeLayout
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_pill_red"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_login_door_white"
+                        android:contentDescription="Login Door" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đăng nhập"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginStart="10dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <!-- Divider: Hoặc -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="18dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#D0D0D0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hoặc"
+                    android:textSize="13sp"
+                    android:textColor="#757575"
+                    android:paddingHorizontal="14dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#D0D0D0" />
+
+            </LinearLayout>
+
+            <!-- Back Button: < Quay lại -->
+            <RelativeLayout
+                android:id="@+id/btnBack"
+                android:layout_width="180dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_button_outline_black"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_left_black"
+                        android:contentDescription="Chevron Left" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quay lại"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#111111"
+                        android:layout_marginStart="8dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Top Back Arrow (Placed last in z-order so it receives clicks) -->
+    <ImageView
+        android:id="@+id/btnBackTop"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_back_white"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back Button Top" />
+
+</RelativeLayout>
