@@ -12,8 +12,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
-import com.example.shoestore.model.User;
-import com.example.shoestore.utils.SharedPrefManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,7 +21,7 @@ import java.util.Map;
 
 public class AdminLoginActivity extends AppCompatActivity {
 
-    private ImageView btnBack;
+    private View btnBack;
     private EditText etUsername;
     private EditText etPassword;
     private ImageView btnTogglePassword;
@@ -49,12 +47,16 @@ public class AdminLoginActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        btnBack.setOnClickListener(v -> {
+        View.OnClickListener goBack = v -> {
             Intent intent = new Intent(AdminLoginActivity.this, RoleSelectionActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
-        });
+        };
+
+        View btnBackTop = findViewById(R.id.btnBackTop);
+        if (btnBackTop != null) btnBackTop.setOnClickListener(goBack);
+        if (btnBack != null) btnBack.setOnClickListener(goBack);
 
         btnTogglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
@@ -72,22 +74,24 @@ public class AdminLoginActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
 
             if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập tên đăng nhập và mật khẩu", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập tên đăng nhập và mật khẩu Admin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            User user = new User("Admin", username, password, "0123456789", "Hà Nội", "ADMIN");
-            user.setId(1);
-            SharedPrefManager.getInstance(this).userLogin(user);
-
-            // Save login data to Firebase
+            // Save login data to Firebase Realtime Database and Firestore
             saveAdminLoginToFirebase(username);
 
-            Toast.makeText(this, "Đăng nhập quản trị viên thành công!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(AdminLoginActivity.this, AdminMainActivity.class);
-            startActivity(intent);
+            Toast.makeText(this, "Đăng nhập Quản trị viên thành công! Dữ liệu đã lưu lên Firebase.", Toast.LENGTH_LONG).show();
             finish();
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, RoleSelectionActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void saveAdminLoginToFirebase(String username) {

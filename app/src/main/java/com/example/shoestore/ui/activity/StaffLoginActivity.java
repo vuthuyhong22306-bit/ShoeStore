@@ -1,6 +1,7 @@
 package com.example.shoestore.ui.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -11,8 +12,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
-import com.example.shoestore.model.User;
-import com.example.shoestore.utils.SharedPrefManager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class StaffLoginActivity extends AppCompatActivity {
 
@@ -60,19 +65,15 @@ public class StaffLoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // Validation: Only nhanvien1 / 123123 allowed
             if (!"nhanvien1".equals(username) || !"123123".equals(password)) {
-                Toast.makeText(this, "Tài khoản hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Tài khoản hoặc mật khẩu Nhân viên không chính xác!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            User user = new User("Nhân viên", username, password, "0987654321", "TP. HCM", "STAFF");
-            user.setId(2);
-            SharedPrefManager.getInstance(this).userLogin(user);
+            // Save login data to Firebase Realtime Database and Firestore
+            saveStaffLoginToFirebase(username);
 
-            Toast.makeText(this, "Đăng nhập nhân viên thành công!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(StaffLoginActivity.this, StaffMainActivity.class);
-            startActivity(intent);
+            Toast.makeText(this, "Đăng nhập Nhân viên thành công! Dữ liệu đã lưu lên Firebase.", Toast.LENGTH_LONG).show();
             finish();
         });
 
@@ -84,22 +85,37 @@ public class StaffLoginActivity extends AppCompatActivity {
         };
 
         View btnBackTop = findViewById(R.id.btnBackTop);
-        if (btnBackTop != null) {
-            btnBackTop.setOnClickListener(goBack);
-        }
+        if (btnBackTop != null) btnBackTop.setOnClickListener(goBack);
 
         View btnBack = findViewById(R.id.btnBack);
-        if (btnBack != null) {
-            btnBack.setOnClickListener(goBack);
-        }
+        if (btnBack != null) btnBack.setOnClickListener(goBack);
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Intent intent = new Intent(this, RoleSelectionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
+    }
+
+    private void saveStaffLoginToFirebase(String username) {
+        try {
+            Map<String, Object> logData = new HashMap<>();
+            logData.put("username", username);
+            logData.put("role", "STAFF");
+            logData.put("login_time", System.currentTimeMillis());
+            logData.put("status", "SUCCESS");
+            logData.put("device_model", Build.MODEL);
+
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref = db.getReference("staff_logins");
+            ref.push().setValue(logData);
+
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            firestore.collection("staff_logins").add(logData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

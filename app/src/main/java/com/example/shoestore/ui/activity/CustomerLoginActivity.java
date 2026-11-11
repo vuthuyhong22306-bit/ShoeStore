@@ -53,14 +53,12 @@ public class CustomerLoginActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        View.OnClickListener goBack = v -> {
+        btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(CustomerLoginActivity.this, RoleSelectionActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
-        };
-
-        btnBack.setOnClickListener(goBack);
+        });
 
         btnTogglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
@@ -107,14 +105,5 @@ public class CustomerLoginActivity extends AppCompatActivity {
             Intent intent = new Intent(CustomerLoginActivity.this, CustomerRegisterActivity.class);
             startActivity(intent);
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(this, RoleSelectionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
     }
 }

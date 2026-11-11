@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.shoestore.MainActivity;
 import com.example.shoestore.R;
 import com.example.shoestore.model.User;
 import com.example.shoestore.repository.UserRepository;
@@ -57,8 +56,15 @@ public class CustomerRegisterActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        btnBack.setOnClickListener(v -> finish());
-        tvGoToLogin.setOnClickListener(v -> finish());
+        View.OnClickListener goToLogin = v -> {
+            Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        };
+
+        btnBack.setOnClickListener(goToLogin);
+        tvGoToLogin.setOnClickListener(goToLogin);
 
         btnTogglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
@@ -107,6 +113,8 @@ public class CustomerRegisterActivity extends AppCompatActivity {
                 public void onSuccess() {
                     runOnUiThread(() -> {
                         Toast.makeText(CustomerRegisterActivity.this, "Đăng ký thành công! Vui lòng đăng nhập.", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
+                        startActivity(intent);
                         finish();
                     });
                 }
