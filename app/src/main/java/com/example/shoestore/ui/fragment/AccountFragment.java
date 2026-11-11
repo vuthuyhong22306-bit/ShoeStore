@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.shoestore.databinding.FragmentAccountBinding;
 import com.example.shoestore.model.User;
 import com.example.shoestore.repository.UserRepository;
-import com.example.shoestore.ui.activity.RoleSelectionActivity;
+import com.example.shoestore.ui.activity.CustomerLoginActivity;
 import com.example.shoestore.utils.SharedPrefManager;
 
 public class AccountFragment extends Fragment {
@@ -67,7 +67,7 @@ public class AccountFragment extends Fragment {
 
         binding.btnLogout.setOnClickListener(v -> {
             SharedPrefManager.getInstance(getContext()).logout();
-            Intent intent = new Intent(getContext(), RoleSelectionActivity.class);
+            Intent intent = new Intent(getContext(), CustomerLoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });

@@ -18,7 +18,7 @@ public class CustomerMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         String role = SharedPrefManager.getInstance(this).getUserRole();
         if (role == null) {
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, CustomerLoginActivity.class));
             finish();
             return;
         }

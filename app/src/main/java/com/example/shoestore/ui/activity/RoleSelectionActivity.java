@@ -6,8 +6,8 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.shoestore.MainActivity;
 import com.example.shoestore.R;
+import com.example.shoestore.utils.SharedPrefManager;
 
 public class RoleSelectionActivity extends AppCompatActivity {
 
@@ -24,23 +24,26 @@ public class RoleSelectionActivity extends AppCompatActivity {
         layoutRoleCustomer = findViewById(R.id.layoutRoleCustomer);
         layoutRoleAdmin = findViewById(R.id.layoutRoleAdmin);
 
-        layoutRoleStaff.setOnClickListener(v -> {
-            Intent intent = new Intent(RoleSelectionActivity.this, StaffLoginActivity.class);
-            startActivity(intent);
-        });
-        layoutRoleCustomer.setOnClickListener(v -> {
-            Intent intent = new Intent(RoleSelectionActivity.this, CustomerLoginActivity.class);
-            startActivity(intent);
-        });
-        layoutRoleAdmin.setOnClickListener(v -> {
-            Intent intent = new Intent(RoleSelectionActivity.this, AdminLoginActivity.class);
-            startActivity(intent);
-        });
-    }
+        if (layoutRoleStaff != null) {
+            layoutRoleStaff.setOnClickListener(v -> {
+                startActivity(new Intent(RoleSelectionActivity.this, StaffLoginActivity.class));
+            });
+        }
 
-    private void navigateToMain(String role) {
-        Intent intent = new Intent(RoleSelectionActivity.this, MainActivity.class);
-        intent.putExtra("SELECTED_ROLE", role);
-        startActivity(intent);
+        if (layoutRoleCustomer != null) {
+            layoutRoleCustomer.setOnClickListener(v -> {
+                if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+                    startActivity(new Intent(RoleSelectionActivity.this, CustomerMainActivity.class));
+                } else {
+                    startActivity(new Intent(RoleSelectionActivity.this, CustomerLoginActivity.class));
+                }
+            });
+        }
+
+        if (layoutRoleAdmin != null) {
+            layoutRoleAdmin.setOnClickListener(v -> {
+                startActivity(new Intent(RoleSelectionActivity.this, AdminLoginActivity.class));
+            });
+        }
     }
 }

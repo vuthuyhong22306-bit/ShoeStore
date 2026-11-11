@@ -5,10 +5,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.shoestore.ui.activity.AdminMainActivity;
+import com.example.shoestore.ui.activity.CustomerLoginActivity;
 import com.example.shoestore.ui.activity.CustomerMainActivity;
-import com.example.shoestore.ui.activity.RoleSelectionActivity;
-import com.example.shoestore.ui.activity.StaffMainActivity;
 import com.example.shoestore.utils.SharedPrefManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,26 +15,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String role = getIntent().getStringExtra("SELECTED_ROLE");
-        if (role == null) {
-            role = SharedPrefManager.getInstance(this).getUserRole();
-        }
-
-        if (role == null) {
-            startActivity(new Intent(this, RoleSelectionActivity.class));
-            finish();
-            return;
-        }
-
-        Intent intent;
-        if ("ADMIN".equals(role)) {
-            intent = new Intent(this, AdminMainActivity.class);
-        } else if ("STAFF".equals(role)) {
-            intent = new Intent(this, StaffMainActivity.class);
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            startActivity(new Intent(this, CustomerMainActivity.class));
         } else {
-            intent = new Intent(this, CustomerMainActivity.class);
+            startActivity(new Intent(this, CustomerLoginActivity.class));
         }
-        startActivity(intent);
         finish();
     }
 }
