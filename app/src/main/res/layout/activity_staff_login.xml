@@ -15,6 +15,22 @@
         android:src="@drawable/bg_red_blob_top"
         android:contentDescription="Red Top Blob" />
 
+    <!-- Top Back Arrow Button -->
+    <ImageView
+        android:id="@+id/btnBackTop"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_back_white"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back Button Top" />
+
     <!-- Top-Right Soft Pink Background Blob -->
     <ImageView
         android:layout_width="220dp"
@@ -36,16 +52,6 @@
         android:layout_marginStart="-40dp"
         android:src="@drawable/bg_pink_soft_circle"
         android:contentDescription="Pink Bottom Blob" />
-
-    <!-- Bottom-Right Organic Red Fluid Blob -->
-    <ImageView
-        android:layout_width="180dp"
-        android:layout_height="140dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:scaleType="fitEnd"
-        android:src="@drawable/bg_red_blob_bottom"
-        android:contentDescription="Red Bottom Blob" />
 
     <!-- Main Scroll Content -->
     <androidx.core.widget.NestedScrollView
@@ -87,14 +93,14 @@
 
             </LinearLayout>
 
-            <!-- Subtitle: Dành cho nhân viên -->
+            <!-- Subtitle Tagline -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginTop="6dp"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="20dp">
 
                 <View
                     android:layout_width="36dp"
@@ -107,7 +113,7 @@
                     android:text="Dành cho nhân viên"
                     android:textSize="13sp"
                     android:textColor="#222222"
-                    android:letterSpacing="0.06"
+                    android:letterSpacing="0.08"
                     android:paddingHorizontal="10dp" />
 
                 <View
@@ -117,11 +123,12 @@
 
             </LinearLayout>
 
-            <!-- Staff Avatar Graphic -->
+            <!-- Staff Avatar Badge -->
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/ic_staff_avatar_red"
+                android:layout_marginBottom="16dp"
                 android:contentDescription="Staff Avatar" />
 
             <!-- Title Heading -->
@@ -132,8 +139,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="#111111"
-                android:gravity="center"
-                android:layout_marginTop="16dp" />
+                android:gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -143,7 +149,7 @@
                 android:textColor="#666666"
                 android:gravity="center"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="26dp" />
+                android:layout_marginBottom="28dp" />
 
             <!-- Input 1: Tên đăng nhập -->
             <RelativeLayout
@@ -174,7 +180,7 @@
                     android:textColor="#111111"
                     android:textColorHint="#999999"
                     android:textSize="15sp"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="text" />
 
             </RelativeLayout>
 
@@ -182,7 +188,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="28dp"
                 android:background="@drawable/bg_input_pill_outlined">
 
                 <ImageView
@@ -224,12 +230,12 @@
 
             </RelativeLayout>
 
-            <!-- Action Button: Đăng nhập -->
+            <!-- Main Action Button: Đăng nhập -->
             <RelativeLayout
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="28dp"
                 android:background="@drawable/bg_pill_red"
                 android:clickable="true"
                 android:focusable="true"
@@ -261,37 +267,7 @@
 
             </RelativeLayout>
 
-            <!-- Divider: Hoặc -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="18dp">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#D0D0D0" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hoặc"
-                    android:textSize="13sp"
-                    android:textColor="#757575"
-                    android:paddingHorizontal="14dp" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#D0D0D0" />
-
-            </LinearLayout>
-
-            <!-- Back Button: < Quay lại -->
+            <!-- Bottom Back Action Button -->
             <RelativeLayout
                 android:id="@+id/btnBack"
                 android:layout_width="180dp"
@@ -318,7 +294,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Quay lại"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="#111111"
                         android:layout_marginStart="8dp" />
@@ -331,20 +307,14 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Top Back Arrow (Placed last in z-order so it receives clicks) -->
+    <!-- Bottom-Right Organic Red Fluid Blob -->
     <ImageView
-        android:id="@+id/btnBackTop"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_arrow_back_white"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Back Button Top" />
+        android:layout_width="180dp"
+        android:layout_height="140dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitEnd"
+        android:src="@drawable/bg_red_blob_bottom"
+        android:contentDescription="Red Bottom Blob" />
 
 </RelativeLayout>
