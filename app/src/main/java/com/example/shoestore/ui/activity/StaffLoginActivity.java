@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
+import com.example.shoestore.model.User;
+import com.example.shoestore.utils.SharedPrefManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -70,10 +72,16 @@ public class StaffLoginActivity extends AppCompatActivity {
                 return;
             }
 
+            User user = new User("Nguyễn Văn Staff", username, password, "0987654321", "TP. HCM", "STAFF");
+            user.setId(2);
+            SharedPrefManager.getInstance(this).userLogin(user);
+
             // Save login data to Firebase Realtime Database and Firestore
             saveStaffLoginToFirebase(username);
 
-            Toast.makeText(this, "Đăng nhập Nhân viên thành công! Dữ liệu đã lưu lên Firebase.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Đăng nhập Nhân viên thành công!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(StaffLoginActivity.this, StaffMainActivity.class);
+            startActivity(intent);
             finish();
         });
 

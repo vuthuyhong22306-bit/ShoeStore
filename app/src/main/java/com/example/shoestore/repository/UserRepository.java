@@ -93,6 +93,10 @@ public class UserRepository {
         return userDao.getUserById(id);
     }
 
+    public LiveData<java.util.List<User>> getAllUsers() {
+        return userDao.getAllUsers();
+    }
+
     public void update(User user) {
         executor.execute(() -> userDao.update(user));
     }

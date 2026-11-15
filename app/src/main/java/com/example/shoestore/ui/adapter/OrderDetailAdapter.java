@@ -60,7 +60,17 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
             productRepository.getProductById(detail.getProductId()).observe(lifecycleOwner, product -> {
                 if (product != null) {
                     binding.tvProductName.setText(product.getName());
-                    Glide.with(binding.ivProduct.getContext()).load(product.getImage()).into(binding.ivProduct);
+                    String imageUrl = product.getImage();
+                    if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                        imageUrl = "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80";
+                    }
+
+                    Glide.with(binding.ivProduct.getContext())
+                            .load(imageUrl)
+                            .placeholder(android.R.drawable.ic_menu_gallery)
+                            .error(android.R.drawable.ic_menu_report_image)
+                            .centerCrop()
+                            .into(binding.ivProduct);
                 }
             });
 

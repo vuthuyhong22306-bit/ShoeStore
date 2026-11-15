@@ -68,7 +68,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 binding.tvProductName.setText(product.getName());
                 NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
                 binding.tvProductPrice.setText(formatter.format(product.getPrice()));
-                Glide.with(binding.ivProduct.getContext()).load(product.getImage()).into(binding.ivProduct);
+
+                String imageUrl = product.getImage();
+                if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                    imageUrl = "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80";
+                }
+
+                Glide.with(binding.ivProduct.getContext())
+                        .load(imageUrl)
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .error(android.R.drawable.ic_menu_report_image)
+                        .centerCrop()
+                        .into(binding.ivProduct);
             } else {
                 binding.tvProductName.setText("Sản phẩm #" + item.getProductId());
             }

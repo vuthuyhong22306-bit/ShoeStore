@@ -105,10 +105,16 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     }
 
     private void applyFiltersAndSort() {
-        String query = binding.etSearch.getText() != null ? binding.etSearch.getText().toString().toLowerCase().trim() : "";
+        String query = "";
+        if (binding.etSearch.getText() != null) {
+            String raw = binding.etSearch.getText().toString().trim().toLowerCase();
+            if (!raw.contains("tìm kiếm") && !raw.contains("tim kiem")) {
+                query = raw;
+            }
+        }
         List<Product> filtered = new ArrayList<>();
         for (Product p : currentProducts) {
-            if (p.getName().toLowerCase().contains(query)) {
+            if (query.isEmpty() || p.getName().toLowerCase().contains(query)) {
                 filtered.add(p);
             }
         }

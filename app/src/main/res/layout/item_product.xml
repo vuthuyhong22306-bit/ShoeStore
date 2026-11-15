@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:strokeColor="#EAEAEA"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,15 +17,15 @@
         <ImageView
             android:id="@+id/ivProduct"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_report_image" />
+            android:background="#F8F9FA" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/tvProductName"
@@ -32,18 +34,20 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="Tên sản phẩm"
-                android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textColor="#111111"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvProductPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:text="2.500.000 đ"
-                android:textColor="@color/primary"
-                android:textSize="14sp" />
+                android:textColor="#E5192C"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

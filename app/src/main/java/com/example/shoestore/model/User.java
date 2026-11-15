@@ -14,6 +14,8 @@ public class User {
     private String address;
     private String role; // CUSTOMER, STAFF, ADMIN
 
+    private boolean isLocked = false;
+
     public User(String fullName, String email, String password, String phoneNumber, String address, String role) {
         this.fullName = fullName;
         this.email = email;
@@ -21,6 +23,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.role = role;
+        this.isLocked = false;
     }
 
     public int getId() { return id; }
@@ -37,4 +40,6 @@ public class User {
     public void setAddress(String address) { this.address = address; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public boolean isLocked() { return isLocked; }
+    public void setLocked(boolean locked) { isLocked = locked; }
 }
