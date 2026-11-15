@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
+import com.example.shoestore.model.User;
+import com.example.shoestore.utils.SharedPrefManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +34,13 @@ public class AdminLoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (SharedPrefManager.getInstance(this).isLoggedIn() && "ADMIN".equalsIgnoreCase(SharedPrefManager.getInstance(this).getUserRole())) {
+            startActivity(new Intent(this, AdminMainActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_admin_login);
 
         initViews();
@@ -78,10 +87,25 @@ public class AdminLoginActivity extends AppCompatActivity {
                 return;
             }
 
+            // Credential check: admin / 123456
+            if (!("admin".equalsIgnoreCase(username) || "admin@shoestore.com".equalsIgnoreCase(username)) || !"123456".equals(password)) {
+                Toast.makeText(this, "Tài khoản hoặc mật khẩu Admin không chính xác! (Gợi ý: admin / 123456)", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // Save Admin user session
+            User adminUser = new User("Admin", username, password, "0123456789", "Hà Nội", "ADMIN");
+            adminUser.setId(1);
+            SharedPrefManager.getInstance(this).userLogin(adminUser);
+
             // Save login data to Firebase Realtime Database and Firestore
             saveAdminLoginToFirebase(username);
 
-            Toast.makeText(this, "Đăng nhập Quản trị viên thành công! Dữ liệu đã lưu lên Firebase.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Đăng nhập Quản trị viên thành công!", Toast.LENGTH_SHORT).show();
+
+            // Navigate to Admin Dashboard (AdminMainActivity)
+            Intent intent = new Intent(AdminLoginActivity.this, AdminMainActivity.class);
+            startActivity(intent);
             finish();
         });
     }

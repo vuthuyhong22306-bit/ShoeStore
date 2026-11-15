@@ -30,4 +30,7 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :id")
     LiveData<User> getUserById(int id);
+
+    @Query("SELECT * FROM users ORDER BY id DESC")
+    LiveData<java.util.List<User>> getAllUsers();
 }

@@ -65,10 +65,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             binding.tvProductName.setText(product.getName());
             NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             binding.tvProductPrice.setText(formatter.format(product.getPrice()));
-            
+
+            String imageUrl = product.getImage();
+            if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                imageUrl = "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80";
+            }
+
             Glide.with(binding.ivProduct.getContext())
-                    .load(product.getImage())
-                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .load(imageUrl)
+                    .placeholder(com.example.shoestore.R.drawable.ic_sneaker_placeholder)
+                    .error(com.example.shoestore.R.drawable.ic_sneaker_placeholder)
+                    .centerCrop()
                     .into(binding.ivProduct);
         }
     }
