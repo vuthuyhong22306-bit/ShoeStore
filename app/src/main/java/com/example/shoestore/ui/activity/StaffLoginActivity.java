@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
@@ -85,7 +87,7 @@ public class StaffLoginActivity extends AppCompatActivity {
             finish();
         });
 
-        View.OnClickListener goBack = v -> {
+        Runnable goBack = () -> {
             Intent intent = new Intent(StaffLoginActivity.this, RoleSelectionActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -93,18 +95,17 @@ public class StaffLoginActivity extends AppCompatActivity {
         };
 
         View btnBackTop = findViewById(R.id.btnBackTop);
-        if (btnBackTop != null) btnBackTop.setOnClickListener(goBack);
+        if (btnBackTop != null) btnBackTop.setOnClickListener(v -> goBack.run());
 
         View btnBack = findViewById(R.id.btnBack);
-        if (btnBack != null) btnBack.setOnClickListener(goBack);
-    }
+        if (btnBack != null) btnBack.setOnClickListener(v -> goBack.run());
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, RoleSelectionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                goBack.run();
+            }
+        });
     }
 
     private void saveStaffLoginToFirebase(String username) {
@@ -123,7 +124,7 @@ public class StaffLoginActivity extends AppCompatActivity {
             FirebaseFirestore firestore = FirebaseFirestore.getInstance();
             firestore.collection("staff_logins").add(logData);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("StaffLoginActivity", "Error saving to Firebase: " + e.getMessage());
         }
     }
 }

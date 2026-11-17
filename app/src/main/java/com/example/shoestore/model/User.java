@@ -14,7 +14,7 @@ public class User {
     private String address;
     private String role; // CUSTOMER, STAFF, ADMIN
 
-    private boolean isLocked = false;
+    private boolean isLocked;
 
     public User(String fullName, String email, String password, String phoneNumber, String address, String role) {
         this.fullName = fullName;

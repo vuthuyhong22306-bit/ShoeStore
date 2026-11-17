@@ -8,8 +8,8 @@ import com.example.shoestore.model.User;
 import java.util.concurrent.ExecutorService;
 
 public class UserRepository {
-    private UserDao userDao;
-    private ExecutorService executor;
+    private final UserDao userDao;
+    private final ExecutorService executor;
 
     public UserRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);

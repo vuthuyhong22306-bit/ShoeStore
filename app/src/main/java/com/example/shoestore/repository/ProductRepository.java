@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class ProductRepository {
-    private ProductDao productDao;
-    private CategoryDao categoryDao;
-    private ExecutorService executor;
+    private final ProductDao productDao;
+    private final CategoryDao categoryDao;
+    private final ExecutorService executor;
 
     public ProductRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
