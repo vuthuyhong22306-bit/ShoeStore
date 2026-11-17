@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class OrderRepository {
-    private OrderDao orderDao;
-    private OrderDetailDao orderDetailDao;
-    private CartItemDao cartItemDao;
-    private ProductDao productDao;
-    private ExecutorService executor;
+    private final OrderDao orderDao;
+    private final OrderDetailDao orderDetailDao;
+    private final CartItemDao cartItemDao;
+    private final ProductDao productDao;
+    private final ExecutorService executor;
 
     public OrderRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);

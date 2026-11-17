@@ -12,12 +12,12 @@ import com.example.shoestore.repository.ProductRepository;
 import java.util.List;
 
 public class HomeViewModel extends AndroidViewModel {
-    private ProductRepository repository;
-    private LiveData<List<Product>> allProducts;
-    private LiveData<List<Category>> allCategories;
-    private MutableLiveData<Integer> selectedCategoryId = new MutableLiveData<>(-1);
-    private MutableLiveData<String> searchQuery = new MutableLiveData<>("");
-    private MutableLiveData<Integer> sortOrder = new MutableLiveData<>(0);
+    private final ProductRepository repository;
+    private final LiveData<List<Product>> allProducts;
+    private final LiveData<List<Category>> allCategories;
+    private final MutableLiveData<Integer> selectedCategoryId = new MutableLiveData<>(-1);
+    private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
+    private final MutableLiveData<Integer> sortOrder = new MutableLiveData<>(0);
 
     public HomeViewModel(@NonNull Application application) {
         super(application);

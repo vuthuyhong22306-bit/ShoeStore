@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
@@ -56,7 +58,7 @@ public class AdminLoginActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        View.OnClickListener goBack = v -> {
+        Runnable goBack = () -> {
             Intent intent = new Intent(AdminLoginActivity.this, RoleSelectionActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -64,8 +66,15 @@ public class AdminLoginActivity extends AppCompatActivity {
         };
 
         View btnBackTop = findViewById(R.id.btnBackTop);
-        if (btnBackTop != null) btnBackTop.setOnClickListener(goBack);
-        if (btnBack != null) btnBack.setOnClickListener(goBack);
+        if (btnBackTop != null) btnBackTop.setOnClickListener(v -> goBack.run());
+        if (btnBack != null) btnBack.setOnClickListener(v -> goBack.run());
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                goBack.run();
+            }
+        });
 
         btnTogglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
@@ -110,14 +119,6 @@ public class AdminLoginActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, RoleSelectionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
-    }
-
     private void saveAdminLoginToFirebase(String username) {
         try {
             Map<String, Object> logData = new HashMap<>();
@@ -134,7 +135,7 @@ public class AdminLoginActivity extends AppCompatActivity {
             FirebaseFirestore firestore = FirebaseFirestore.getInstance();
             firestore.collection("admin_logins").add(logData);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("AdminLoginActivity", "Error saving to Firebase: " + e.getMessage());
         }
     }
 }

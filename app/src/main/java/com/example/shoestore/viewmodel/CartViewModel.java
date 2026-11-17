@@ -15,18 +15,17 @@ import com.example.shoestore.utils.SharedPrefManager;
 import java.util.List;
 
 public class CartViewModel extends AndroidViewModel {
-    private CartRepository cartRepository;
-    private ProductRepository productRepository;
-    private int userId;
-    private LiveData<List<Product>> allProducts;
-    private LiveData<List<CartItem>> cartItems;
-    private MutableLiveData<String> actionMessage = new MutableLiveData<>();
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
+    private final LiveData<List<Product>> allProducts;
+    private final LiveData<List<CartItem>> cartItems;
+    private final MutableLiveData<String> actionMessage = new MutableLiveData<>();
 
     public CartViewModel(@NonNull Application application) {
         super(application);
         cartRepository = new CartRepository(application);
         productRepository = new ProductRepository(application);
-        userId = SharedPrefManager.getInstance(application).getUserId();
+        int userId = SharedPrefManager.getInstance(application).getUserId();
         allProducts = productRepository.getAllProducts();
         cartItems = cartRepository.getCartItems(userId);
     }

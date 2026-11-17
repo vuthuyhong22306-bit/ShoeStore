@@ -9,10 +9,10 @@ import com.example.shoestore.model.User;
 import com.example.shoestore.repository.UserRepository;
 
 public class AuthViewModel extends AndroidViewModel {
-    private UserRepository repository;
-    private MutableLiveData<User> loggedInUser = new MutableLiveData<>();
-    private MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private MutableLiveData<Boolean> registrationSuccess = new MutableLiveData<>();
+    private final UserRepository repository;
+    private final MutableLiveData<User> loggedInUser = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> registrationSuccess = new MutableLiveData<>();
 
     public AuthViewModel(@NonNull Application application) {
         super(application);

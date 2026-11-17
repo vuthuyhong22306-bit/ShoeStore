@@ -43,7 +43,9 @@
         <activity
             android:name=".ui.activity.CustomerLoginActivity"
             android:exported="true" />
-        <activity android:name=".ui.activity.CustomerRegisterActivity" />
+        <activity
+            android:name=".ui.activity.CustomerRegisterActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.activity.CustomerMainActivity"
             android:exported="true" />
