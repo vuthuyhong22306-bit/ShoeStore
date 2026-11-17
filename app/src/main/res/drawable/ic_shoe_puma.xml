@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <path
+      android:fillColor="#F9FBE7"
+      android:pathData="M0,0h200v150h-200z" />
+  <!-- Outsole -->
+  <path
+      android:fillColor="#37474F"
+      android:pathData="M 25,110 C 25,110 50,118 100,118 C 150,118 175,110 175,110 L 170,122 C 170,122 145,128 100,128 C 55,128 30,122 30,122 Z" />
+  <!-- Body -->
+  <path
+      android:fillColor="#FF6D00"
+      android:pathData="M 30,108 C 25,95 30,70 55,65 C 70,62 85,75 105,75 C 125,75 140,55 160,80 C 175,100 172,108 172,108 Z" />
+  <!-- Formstrip Wave -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 45,95 Q 85,70 160,90 Q 100,105 50,100 Z" />
+</vector>

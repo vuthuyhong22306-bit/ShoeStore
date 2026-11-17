@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <path
+      android:fillColor="#FFF0F2"
+      android:pathData="M0,0h200v150h-200z" />
+  <!-- Sneaker Outsole -->
+  <path
+      android:fillColor="#E5192C"
+      android:pathData="M 25,110 C 25,110 50,118 100,118 C 150,118 175,110 175,110 L 170,122 C 170,122 145,128 100,128 C 55,128 30,122 30,122 Z" />
+  <!-- Sneaker Body (High top Jordan style) -->
+  <path
+      android:fillColor="#111111"
+      android:pathData="M 40,108 C 30,80 35,45 65,40 C 80,38 95,65 115,65 C 135,65 150,55 168,85 C 178,102 172,108 172,108 Z" />
+  <!-- Red Panel -->
+  <path
+      android:fillColor="#E5192C"
+      android:pathData="M 45,95 C 40,82 42,55 62,50 C 72,48 85,68 100,68 C 115,68 128,75 145,95 Z" />
+</vector>

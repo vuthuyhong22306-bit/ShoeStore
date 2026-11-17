@@ -56,6 +56,7 @@
         <activity android:name=".ui.activity.AddEditProductActivity" />
         <activity android:name=".ui.activity.ManageCategoriesActivity" />
         <activity android:name=".ui.activity.ManageOrdersActivity" />
+        <activity android:name=".ui.activity.ManageStockActivity" />
         <activity android:name=".ui.activity.StatisticsActivity" />
         <activity android:name=".MainActivity" />
 
