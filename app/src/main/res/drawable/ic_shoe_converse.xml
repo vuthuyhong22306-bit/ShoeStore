@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <path
+      android:fillColor="#ECEFF1"
+      android:pathData="M0,0h200v150h-200z" />
+  <!-- White Rubber Toe Cap & Sole -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 20,105 C 20,105 50,118 100,118 C 150,118 180,105 180,105 L 175,124 C 175,124 145,130 100,130 C 55,130 25,124 25,124 Z" />
+  <!-- Canvas Body -->
+  <path
+      android:fillColor="#111111"
+      android:pathData="M 35,104 C 30,80 40,50 65,45 C 80,42 95,68 115,68 C 135,68 150,60 168,88 C 178,100 172,104 172,104 Z" />
+  <!-- Rubber Toe Cap -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 140,88 C 155,90 170,98 175,105 L 140,105 Z" />
+</vector>

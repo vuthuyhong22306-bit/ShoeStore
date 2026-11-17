@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <path
+      android:fillColor="#F0F4F8"
+      android:pathData="M0,0h200v150h-200z" />
+  <!-- Sneaker Outsole -->
+  <path
+      android:fillColor="#111111"
+      android:pathData="M 25,110 C 25,110 50,118 100,118 C 150,118 175,110 175,110 L 170,122 C 170,122 145,128 100,128 C 55,128 30,122 30,122 Z" />
+  <!-- Sneaker Body -->
+  <path
+      android:fillColor="#E5192C"
+      android:pathData="M 30,108 C 25,95 30,70 55,65 C 70,62 85,75 105,75 C 125,75 140,55 160,80 C 175,100 172,108 172,108 Z" />
+  <!-- Swoosh Accent -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 50,85 Q 90,105 150,70 Q 100,95 65,82 Z" />
+</vector>

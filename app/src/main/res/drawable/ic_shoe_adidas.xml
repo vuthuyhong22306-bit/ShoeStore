@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <path
+      android:fillColor="#F4F6F8"
+      android:pathData="M0,0h200v150h-200z" />
+  <!-- Boost Sole -->
+  <path
+      android:fillColor="#E0E0E0"
+      android:pathData="M 25,108 C 25,108 50,118 100,118 C 150,118 175,108 175,108 L 170,122 C 170,122 145,128 100,128 C 55,128 30,122 30,122 Z" />
+  <!-- Upper Body -->
+  <path
+      android:fillColor="#222222"
+      android:pathData="M 30,106 C 25,95 35,70 60,65 C 75,62 90,75 110,75 C 130,75 145,60 165,85 C 175,100 172,106 172,106 Z" />
+  <!-- 3 Stripes -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 80,72 L 90,72 L 75,105 L 65,105 Z M 95,74 L 105,74 L 90,107 L 80,107 Z M 110,76 L 120,76 L 105,109 L 95,109 Z" />
+</vector>
