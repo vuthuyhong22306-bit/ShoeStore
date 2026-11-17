@@ -2,39 +2,64 @@ package com.example.shoestore.ui.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.example.shoestore.databinding.ActivityProductDetailBinding;
+import com.example.shoestore.R;
 import com.example.shoestore.model.CartItem;
 import com.example.shoestore.model.Product;
 import com.example.shoestore.repository.CartRepository;
 import com.example.shoestore.repository.ProductRepository;
 import com.example.shoestore.utils.SharedPrefManager;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
 public class ProductDetailActivity extends AppCompatActivity {
-    private ActivityProductDetailBinding binding;
     private ProductRepository productRepository;
     private CartRepository cartRepository;
     private Product currentProduct;
     private String selectedSize = "";
     private String selectedColor = "";
 
+    private ImageView ivProduct;
+    private Toolbar toolbar;
+    private TextView tvProductName;
+    private TextView tvProductPrice;
+    private TextView tvProductDescription;
+    private ChipGroup chipGroupSizes;
+    private ChipGroup chipGroupColors;
+    private TextView tvStock;
+    private Button btnAddToCart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityProductDetailBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_product_detail);
 
-        setSupportActionBar(binding.toolbar);
+        ivProduct = findViewById(R.id.ivProduct);
+        toolbar = findViewById(R.id.toolbar);
+        tvProductName = findViewById(R.id.tvProductName);
+        tvProductPrice = findViewById(R.id.tvProductPrice);
+        tvProductDescription = findViewById(R.id.tvProductDescription);
+        chipGroupSizes = findViewById(R.id.chipGroupSizes);
+        chipGroupColors = findViewById(R.id.chipGroupColors);
+        tvStock = findViewById(R.id.tvStock);
+        btnAddToCart = findViewById(R.id.btnAddToCart);
+
+        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            binding.toolbar.setNavigationOnClickListener(v -> finish());
+            if (toolbar != null) {
+                toolbar.setNavigationOnClickListener(v -> finish());
+            }
         }
 
         int productId = getIntent().getIntExtra("PRODUCT_ID", -1);
@@ -48,80 +73,88 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnAddToCart.setOnClickListener(v -> addToCart());
+        if (btnAddToCart != null) {
+            btnAddToCart.setOnClickListener(v -> addToCart());
+        }
     }
 
     private void displayProductDetails(Product product) {
-        binding.tvProductName.setText(product.getName());
+        if (tvProductName != null) tvProductName.setText(product.getName());
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale.Builder().setLanguage("vi").setRegion("VN").build());
-        binding.tvProductPrice.setText(formatter.format(product.getPrice()));
-        binding.tvProductDescription.setText(product.getDescription());
-        binding.tvStock.setText("Tồn kho: " + product.getStock());
+        if (tvProductPrice != null) tvProductPrice.setText(formatter.format(product.getPrice()));
+        if (tvProductDescription != null) tvProductDescription.setText(product.getDescription());
+        if (tvStock != null) tvStock.setText("Tồn kho: " + product.getStock());
 
         String imageUrl = product.getImage();
         if (imageUrl == null || imageUrl.trim().isEmpty()) {
             imageUrl = "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80";
         }
 
-        Glide.with(this)
-                .load(imageUrl)
-                .placeholder(android.R.drawable.ic_menu_gallery)
-                .error(android.R.drawable.ic_menu_report_image)
-                .centerCrop()
-                .into(binding.ivProduct);
-
-        binding.chipGroupSizes.removeAllViews();
-        if (product.getSizes() != null && !product.getSizes().isEmpty()) {
-            String[] sizes = product.getSizes().split(",");
-            for (String size : sizes) {
-                Chip chip = new Chip(this);
-                chip.setId(View.generateViewId());
-                chip.setText(size.trim());
-                chip.setCheckable(true);
-                binding.chipGroupSizes.addView(chip);
-            }
+        if (ivProduct != null) {
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .centerCrop()
+                    .into(ivProduct);
         }
-        binding.chipGroupSizes.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (!checkedIds.isEmpty()) {
-                Chip chip = group.findViewById(checkedIds.get(0));
-                if (chip != null) selectedSize = chip.getText().toString();
-            } else {
-                selectedSize = "";
-            }
-        });
 
-        binding.chipGroupColors.removeAllViews();
-        if (product.getColors() != null && !product.getColors().isEmpty()) {
-            String[] colors = product.getColors().split(",");
-            for (String color : colors) {
-                Chip chip = new Chip(this);
-                chip.setId(View.generateViewId());
-                chip.setText(color.trim());
-                chip.setCheckable(true);
-                binding.chipGroupColors.addView(chip);
+        if (chipGroupSizes != null) {
+            chipGroupSizes.removeAllViews();
+            if (product.getSizes() != null && !product.getSizes().isEmpty()) {
+                String[] sizes = product.getSizes().split(",");
+                for (String size : sizes) {
+                    Chip chip = new Chip(this);
+                    chip.setId(View.generateViewId());
+                    chip.setText(size.trim());
+                    chip.setCheckable(true);
+                    chipGroupSizes.addView(chip);
+                }
             }
+            chipGroupSizes.setOnCheckedStateChangeListener((group, checkedIds) -> {
+                if (checkedIds != null && !checkedIds.isEmpty()) {
+                    Chip chip = group.findViewById(checkedIds.get(0));
+                    if (chip != null) selectedSize = chip.getText().toString();
+                } else {
+                    selectedSize = "";
+                }
+            });
         }
-        binding.chipGroupColors.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (!checkedIds.isEmpty()) {
-                Chip chip = group.findViewById(checkedIds.get(0));
-                if (chip != null) selectedColor = chip.getText().toString();
-            } else {
-                selectedColor = "";
+
+        if (chipGroupColors != null) {
+            chipGroupColors.removeAllViews();
+            if (product.getColors() != null && !product.getColors().isEmpty()) {
+                String[] colors = product.getColors().split(",");
+                for (String color : colors) {
+                    Chip chip = new Chip(this);
+                    chip.setId(View.generateViewId());
+                    chip.setText(color.trim());
+                    chip.setCheckable(true);
+                    chipGroupColors.addView(chip);
+                }
             }
-        });
+            chipGroupColors.setOnCheckedStateChangeListener((group, checkedIds) -> {
+                if (checkedIds != null && !checkedIds.isEmpty()) {
+                    Chip chip = group.findViewById(checkedIds.get(0));
+                    if (chip != null) selectedColor = chip.getText().toString();
+                } else {
+                    selectedColor = "";
+                }
+            });
+        }
     }
 
     private void addToCart() {
         if (selectedSize.isEmpty()) {
-            com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), "Vui lòng chọn size", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+            com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content), "Vui lòng chọn size", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             return;
         }
         if (selectedColor.isEmpty()) {
-            com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), "Vui lòng chọn màu", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+            com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content), "Vui lòng chọn màu", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             return;
         }
         if (currentProduct == null || currentProduct.getStock() <= 0) {
-            com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), "Sản phẩm đã hết hàng", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+            com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content), "Sản phẩm đã hết hàng", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             return;
         }
 
@@ -130,12 +163,12 @@ public class ProductDetailActivity extends AppCompatActivity {
         cartRepository.addToCart(cartItem, currentProduct.getStock(), new CartRepository.OnCartActionCallback() {
             @Override
             public void onSuccess() {
-                runOnUiThread(() -> com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), "Đã thêm vào giỏ hàng!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show());
+                runOnUiThread(() -> com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content), "Đã thêm vào giỏ hàng!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show());
             }
 
             @Override
             public void onError(String message) {
-                runOnUiThread(() -> com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show());
+                runOnUiThread(() -> com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content), message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show());
             }
         });
     }
