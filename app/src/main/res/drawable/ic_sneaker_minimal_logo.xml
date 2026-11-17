@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="80dp"
+    android:viewportWidth="120"
+    android:viewportHeight="80">
+
+  <!-- Shoe Sole Outsole -->
+  <path
+      android:fillColor="#00000000"
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="4"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"
+      android:pathData="M 12,62 C 28,67 60,67 104,63 C 112,61 112,55 106,50 C 92,45 78,47 70,43 C 62,39 58,25 50,18 C 42,11 32,13 28,21 L 20,32 L 12,36 C 6,38 6,45 8,50 C 9,54 8,58 12,62 Z" />
+
+  <!-- Midsole Divider -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="3.5"
+      android:strokeLineCap="round"
+      android:pathData="M 10,54 C 30,59 65,59 108,55" />
+
+  <!-- Collar and Laces Details -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="3"
+      android:strokeLineCap="round"
+      android:pathData="M 28,21 C 35,25 45,29 60,33 M 34,29 L 45,37 M 42,23 L 53,31" />
+
+  <!-- Air Bubble Heel Accent -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="2.5"
+      android:strokeLineCap="round"
+      android:pathData="M 90,56 C 96,56 102,54 104,52" />
+
+</vector>

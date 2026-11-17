@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ShoeStore</string>
+    <string-array name="sort_options">
+        <item>Mặc định</item>
+        <item>Giá thấp đến cao</item>
+        <item>Giá cao đến thấp</item>
+    </string-array>
 </resources>

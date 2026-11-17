@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+  <!-- Head Outline / Face Circle -->
+  <path
+      android:fillColor="#00000000"
+      android:strokeColor="#E5192C"
+      android:strokeWidth="5"
+      android:strokeLineCap="round"
+      android:pathData="M 50,28 C 39,28 30,37 30,48 C 30,59 39,68 50,68 C 61,68 70,59 70,48 C 70,37 61,28 50,28 Z" />
+
+  <!-- Visor Cap Top Fill -->
+  <path
+      android:fillColor="#E5192C"
+      android:pathData="M 33,40 C 33,30 40,24 50,24 C 60,24 67,30 67,40 Z" />
+
+  <!-- Cap Visor Brim -->
+  <path
+      android:fillColor="#E5192C"
+      android:pathData="M 28,42 C 28,38 48,34 72,42 C 72,45 55,47 28,42 Z" />
+
+  <!-- Shirt Body Solid Fill -->
+  <path
+      android:fillColor="#E5192C"
+      android:pathData="M 20,90 C 20,74 34,68 50,68 C 66,68 80,74 80,90 Z" />
+
+  <!-- Collar V-Cut Accent -->
+  <path
+      android:strokeColor="#FFFFFF"
+      android:strokeWidth="3.5"
+      android:strokeLineCap="round"
+      android:pathData="M 44,68 L 50,76 L 56,68" />
+
+  <!-- Staff Name Tag Badge on Chest -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M 64,80 H 74 V 84 H 64 Z" />
+
+</vector>

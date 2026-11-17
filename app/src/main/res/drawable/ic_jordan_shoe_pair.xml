@@ -1,0 +1,81 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="180dp"
+    android:height="140dp"
+    android:viewportWidth="180"
+    android:viewportHeight="140">
+
+  <!-- Shadow -->
+  <path
+      android:fillColor="#1A000000"
+      android:pathData="M 15,125 C 50,135 130,135 165,125 C 180,120 120,115 80,115 C 40,115 5,120 15,125 Z" />
+
+  <!-- LEFT SHOE (Back) -->
+  <group android:translateX="-10" android:translateY="-15" android:scaleX="0.85" android:scaleY="0.85">
+    <!-- Midsole -->
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M 30,110 C 50,113 80,114 125,114 C 160,114 180,109 184,103 C 180,94 130,95 30,101 Z" />
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M 125,35 C 135,32 155,30 165,38 C 172,44 175,55 174,68 L 165,88 L 140,88 L 132,60 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 85,70 L 132,60 L 140,88 L 115,96 L 70,95 Z" />
+    <path
+        android:fillColor="#111111"
+        android:pathData="M 30,101 C 38,90 52,86 65,88 L 75,91 L 90,66 L 120,46 L 130,31 C 122,34 112,48 85,70 L 52,91 C 35,93 32,97 30,101 Z" />
+    <path
+        android:fillColor="#111111"
+        android:pathData="M 68,90 C 80,85 110,75 145,62 C 158,57 168,52 172,50 C 170,54 160,65 148,72 C 130,82 105,92 78,94 Z" />
+  </group>
+
+  <!-- RIGHT SHOE (Front) -->
+  <group android:translateX="10" android:translateY="5">
+    <!-- Midsole White -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 20,112 C 40,115 70,117 115,117 C 150,117 172,112 176,106 C 172,98 125,98 20,103 Z" />
+    <!-- Outsole Red -->
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M 15,114 C 35,118 68,120 115,120 C 155,120 174,115 178,109 L 176,106 C 172,112 150,117 115,117 C 70,117 40,115 20,112 Z" />
+    <!-- Red Heel / Ankle Collar -->
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M 115,30 C 125,27 145,25 155,33 C 162,39 165,50 164,63 L 155,83 L 130,83 L 122,55 Z" />
+    <!-- White Side Quarter Panel -->
+    <path
+        android:fillColor="#F8F8F8"
+        android:pathData="M 75,65 L 122,55 L 130,83 L 105,91 L 60,90 Z" />
+    <!-- Black Eyestay & Mudguard -->
+    <path
+        android:fillColor="#111111"
+        android:pathData="M 20,103 C 28,92 42,87 55,89 L 65,92 L 80,67 L 110,47 L 120,32 C 112,35 102,49 75,71 L 42,92 C 25,94 22,98 20,103 Z" />
+    <!-- Red Toe Box Overlay -->
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M 20,103 C 24,97 34,91 48,91 C 38,97 28,101 20,103 Z" />
+    <!-- Black Swoosh -->
+    <path
+        android:fillColor="#111111"
+        android:pathData="M 58,85 C 70,80 100,70 135,57 C 148,52 158,47 162,45 C 160,49 150,60 138,67 C 120,77 95,87 68,89 Z" />
+    <!-- Black Collar Accent -->
+    <path
+        android:fillColor="#111111"
+        android:pathData="M 120,31 C 130,29 142,28 150,33 C 148,40 142,47 135,50 C 128,48 122,40 120,31 Z" />
+    <!-- White Laces -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:pathData="M 62,77 L 72,73 M 70,69 L 80,65 M 78,61 L 88,57 M 86,53 L 96,49 M 94,45 L 104,41 M 102,37 L 112,33" />
+  </group>
+
+  <!-- Sparkles / Motion lines -->
+  <path
+      android:strokeColor="#E53935"
+      android:strokeWidth="2"
+      android:strokeLineCap="round"
+      android:pathData="M 160,45 L 168,40 M 165,52 L 174,52 M 162,60 L 170,66" />
+
+</vector>

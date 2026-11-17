@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- Top-Left Organic Red Fluid Blob -->
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="120dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/bg_red_blob_top"
+        android:contentDescription="Red Top Blob" />
+
+    <!-- Top-Right Soft Pink Background Blob -->
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-40dp"
+        android:layout_marginEnd="-40dp"
+        android:src="@drawable/bg_pink_soft_circle"
+        android:contentDescription="Pink Top Blob" />
+
+    <!-- Bottom-Left Soft Pink Background Blob -->
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginStart="-40dp"
+        android:src="@drawable/bg_pink_soft_circle"
+        android:contentDescription="Pink Bottom Blob" />
+
+    <!-- Bottom-Right Organic Red Fluid Blob -->
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="140dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitEnd"
+        android:src="@drawable/bg_red_blob_bottom"
+        android:contentDescription="Red Bottom Blob" />
+
+    <!-- Center Main Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="28dp"
+            android:paddingTop="60dp"
+            android:paddingBottom="40dp"
+            android:gravity="center_horizontal">
+
+            <!-- Brand Logo Title: ShoeStore -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shoe"
+                    android:textSize="40sp"
+                    android:textStyle="bold|italic"
+                    android:textColor="#111111" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Store"
+                    android:textSize="40sp"
+                    android:textStyle="bold|italic"
+                    android:textColor="#E5192C" />
+
+            </LinearLayout>
+
+            <!-- Brand Tagline Divider -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="36dp">
+
+                <View
+                    android:layout_width="36dp"
+                    android:layout_height="1.5dp"
+                    android:background="#111111" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sneaker for a better you"
+                    android:textSize="13sp"
+                    android:textColor="#222222"
+                    android:letterSpacing="0.08"
+                    android:paddingHorizontal="10dp" />
+
+                <View
+                    android:layout_width="36dp"
+                    android:layout_height="1.5dp"
+                    android:background="#111111" />
+
+            </LinearLayout>
+
+            <!-- Welcome Greeting Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chào mừng đến với"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="#111111"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ShoeStore!"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="#E5192C"
+                android:gravity="center"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vui lòng chọn vai trò để tiếp tục"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="36dp" />
+
+            <!-- Role Button 1: Nhân viên -->
+            <RelativeLayout
+                android:id="@+id/layoutRoleStaff"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_pill_black"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="24dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/ivRoleStaff"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_person_white"
+                        android:contentDescription="Nhân viên Icon" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="18dp"
+                        android:background="#44FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/tvRoleStaff"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nhân viên"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginStart="18dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="22dp"
+                    android:src="@drawable/ic_chevron_right_white"
+                    android:contentDescription="Arrow Right" />
+
+            </RelativeLayout>
+
+            <!-- Role Button 2: Khách hàng (Vibrant Red Pill) -->
+            <RelativeLayout
+                android:id="@+id/layoutRoleCustomer"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_pill_red"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="24dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/ivRoleCustomer"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_group_white"
+                        android:contentDescription="Khách hàng Icon" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="18dp"
+                        android:background="#44FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/tvRoleCustomer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Khách hàng"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginStart="18dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="22dp"
+                    android:src="@drawable/ic_chevron_right_white"
+                    android:contentDescription="Arrow Right" />
+
+            </RelativeLayout>
+
+            <!-- Role Button 3: Quản trị viên -->
+            <RelativeLayout
+                android:id="@+id/layoutRoleAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_pill_black"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="24dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/ivRoleAdmin"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_shield_star_white"
+                        android:contentDescription="Quản trị viên Icon" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="18dp"
+                        android:background="#44FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/tvRoleAdmin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quản trị viên"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginStart="18dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="22dp"
+                    android:src="@drawable/ic_chevron_right_white"
+                    android:contentDescription="Arrow Right" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>
