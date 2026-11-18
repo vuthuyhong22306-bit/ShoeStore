@@ -97,22 +97,37 @@ public class CustomerLoginActivity extends AppCompatActivity {
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        // 1. Query Firebase Realtime Database node "users" by phoneNumber first
+        // 1. Query Firebase Realtime Database by phoneNumber
         usersRef.orderByChild("phoneNumber").equalTo(account).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    processFirebaseLoginSnapshot(snapshot, password);
+                    processFirebaseLoginSnapshot(snapshot, account, password);
                 } else {
-                    // 2. Fallback: Query by email if phone search returns no snapshot
+                    // 2. Query by email
                     usersRef.orderByChild("email").equalTo(account).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot emailSnapshot) {
                             if (emailSnapshot.exists()) {
-                                processFirebaseLoginSnapshot(emailSnapshot, password);
+                                processFirebaseLoginSnapshot(emailSnapshot, account, password);
                             } else {
-                                // 3. Fallback to Room DB if Firebase RTDB has no match (or offline)
-                                loginWithRoomFallback(account, password);
+                                // 3. Query all users on Firebase RTDB to match phone/email regardless of formatting
+                                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot allSnapshot) {
+                                        if (allSnapshot.exists() && hasMatchingUser(allSnapshot, account)) {
+                                            processFirebaseLoginSnapshot(allSnapshot, account, password);
+                                        } else {
+                                            // 4. Fallback to Room DB
+                                            loginWithRoomFallback(account, password);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        loginWithRoomFallback(account, password);
+                                    }
+                                });
                             }
                         }
 
@@ -131,35 +146,67 @@ public class CustomerLoginActivity extends AppCompatActivity {
         });
     }
 
-    private void processFirebaseLoginSnapshot(DataSnapshot snapshot, String inputPassword) {
+    private boolean hasMatchingUser(DataSnapshot snapshot, String account) {
+        String cleanAccount = account.replaceAll("[^0-9a-zA-Z@.]", "");
+        for (DataSnapshot userSnap : snapshot.getChildren()) {
+            String dbPhone = getSnapString(userSnap, "phoneNumber", "phone");
+            String dbEmail = getSnapString(userSnap, "email");
+            if (dbPhone != null) {
+                String cleanPhone = dbPhone.replaceAll("[^0-9]", "");
+                if (!cleanPhone.isEmpty() && (cleanPhone.equals(cleanAccount) || (cleanPhone.length() >= 9 && cleanAccount.endsWith(cleanPhone)))) {
+                    return true;
+                }
+            }
+            if (dbEmail != null && dbEmail.equalsIgnoreCase(account)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void processFirebaseLoginSnapshot(DataSnapshot snapshot, String inputAccount, String inputPassword) {
         boolean matchFound = false;
+        String cleanAccount = inputAccount.replaceAll("[^0-9a-zA-Z@.]", "");
 
         for (DataSnapshot userSnap : snapshot.getChildren()) {
-            String dbPassword = userSnap.child("password").getValue(String.class);
-            Boolean dbLocked = userSnap.child("locked").getValue(Boolean.class);
-            if (dbLocked == null) {
-                dbLocked = userSnap.child("isLocked").getValue(Boolean.class);
+            String dbPhone = getSnapString(userSnap, "phoneNumber", "phone");
+            String dbEmail = getSnapString(userSnap, "email");
+
+            // Filter child snapshot if searching all nodes
+            boolean isAccountMatch = false;
+            if (dbPhone != null) {
+                String cleanPhone = dbPhone.replaceAll("[^0-9]", "");
+                if (cleanPhone.equals(cleanAccount) || (cleanPhone.length() >= 9 && cleanAccount.endsWith(cleanPhone))) {
+                    isAccountMatch = true;
+                }
             }
-            if (dbLocked == null) {
-                dbLocked = false;
+            if (dbEmail != null && dbEmail.equalsIgnoreCase(inputAccount)) {
+                isAccountMatch = true;
             }
-            String dbRole = userSnap.child("role").getValue(String.class);
-            Long dbIdLong = userSnap.child("id").getValue(Long.class);
-            int dbId = dbIdLong != null ? dbIdLong.intValue() : 0;
-            String dbFullName = userSnap.child("fullName").getValue(String.class);
-            String dbEmail = userSnap.child("email").getValue(String.class);
-            String dbPhone = userSnap.child("phoneNumber").getValue(String.class);
-            String dbAddress = userSnap.child("address").getValue(String.class);
+            if (snapshot.getChildrenCount() == 1) {
+                isAccountMatch = true; // Query already filtered by equalTo
+            }
+
+            if (!isAccountMatch) continue;
+
+            String dbPassword = getSnapString(userSnap, "password");
+            boolean dbLocked = getSnapBoolean(userSnap, "locked", "isLocked");
+            String dbRole = getSnapString(userSnap, "role");
+            int dbId = getSnapInt(userSnap, "id");
+            String dbFullName = getSnapString(userSnap, "fullName", "name");
+            String dbAddress = getSnapString(userSnap, "address");
+            String dbGender = getSnapString(userSnap, "gender");
+            String dbDob = getSnapString(userSnap, "dateOfBirth", "dob");
 
             if (dbPassword != null && dbPassword.equals(inputPassword)) {
                 matchFound = true;
 
-                if (!"CUSTOMER".equalsIgnoreCase(dbRole)) {
+                if (dbRole != null && !"CUSTOMER".equalsIgnoreCase(dbRole)) {
                     Toast.makeText(this, "Tài khoản hoặc mật khẩu không chính xác!", Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                if (Boolean.TRUE.equals(dbLocked)) {
+                if (dbLocked) {
                     Toast.makeText(this, "Tài khoản đã bị khóa", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -168,12 +215,14 @@ public class CustomerLoginActivity extends AppCompatActivity {
                         dbFullName != null ? dbFullName : "",
                         dbEmail != null ? dbEmail : "",
                         inputPassword,
-                        dbPhone != null ? dbPhone : "",
+                        dbPhone != null ? dbPhone : inputAccount,
                         dbAddress != null ? dbAddress : "Việt Nam",
                         "CUSTOMER"
                 );
-                user.setId(dbId);
+                if (dbId > 0) user.setId(dbId);
                 user.setLocked(false);
+                user.setGender(dbGender);
+                user.setDateOfBirth(dbDob);
 
                 // Sync to local Room DB for session cache
                 userRepository.syncUserFromFirebase(user, new UserRepository.OnUserResultCallback() {
@@ -237,5 +286,45 @@ public class CustomerLoginActivity extends AppCompatActivity {
         }
         startActivity(intent);
         finish();
+    }
+
+    private static String getSnapString(DataSnapshot snap, String... keys) {
+        for (String key : keys) {
+            if (snap.hasChild(key)) {
+                Object val = snap.child(key).getValue();
+                if (val != null) return String.valueOf(val);
+            }
+        }
+        return null;
+    }
+
+    private static int getSnapInt(DataSnapshot snap, String key) {
+        if (snap.hasChild(key)) {
+            Object val = snap.child(key).getValue();
+            if (val instanceof Number) {
+                return ((Number) val).intValue();
+            }
+            if (val != null) {
+                try {
+                    return Integer.parseInt(String.valueOf(val));
+                } catch (Exception ignored) {}
+            }
+        }
+        try {
+            return Integer.parseInt(snap.getKey());
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    private static boolean getSnapBoolean(DataSnapshot snap, String... keys) {
+        for (String key : keys) {
+            if (snap.hasChild(key)) {
+                Object val = snap.child(key).getValue();
+                if (val instanceof Boolean) return (Boolean) val;
+                if (val instanceof Number) return ((Number) val).intValue() != 0;
+                if (val != null) return "true".equalsIgnoreCase(String.valueOf(val));
+            }
+        }
+        return false;
     }
 }

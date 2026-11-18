@@ -3,6 +3,7 @@ package com.example.shoestore.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -10,7 +11,7 @@ import com.example.shoestore.model.User;
 
 @Dao
 public interface UserDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(User user);
 
     @Update
@@ -30,6 +31,9 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :id")
     LiveData<User> getUserById(int id);
+
+    @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
+    User getUserByIdDirect(int id);
 
     @Query("SELECT * FROM users ORDER BY id DESC")
     LiveData<java.util.List<User>> getAllUsers();

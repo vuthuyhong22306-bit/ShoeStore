@@ -16,9 +16,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.shoestore.databinding.FragmentHomeBinding;
 import com.example.shoestore.model.Category;
 import com.example.shoestore.model.Product;
+import com.example.shoestore.repository.FavoriteRepository;
 import com.example.shoestore.ui.activity.ProductDetailActivity;
 import com.example.shoestore.ui.adapter.BannerAdapter;
 import com.example.shoestore.ui.adapter.ProductAdapter;
+import com.example.shoestore.utils.SharedPrefManager;
 import com.example.shoestore.viewmodel.HomeViewModel;
 import com.google.android.material.chip.Chip;
 
@@ -29,9 +31,11 @@ import java.util.List;
 public class HomeFragment extends Fragment implements ProductAdapter.OnProductClickListener {
     private FragmentHomeBinding binding;
     private HomeViewModel viewModel;
+    private FavoriteRepository favoriteRepository;
     private ProductAdapter adapter;
     private List<Product> currentProducts = new ArrayList<>();
     private int currentSortOrder = 0; // 0: Default, 1: Low-High, 2: High-Low
+    private int userId;
 
     @Nullable
     @Override
@@ -44,9 +48,19 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        adapter = new ProductAdapter(this);
-        binding.rvProducts.setAdapter(adapter);
+        favoriteRepository = new FavoriteRepository(requireActivity().getApplication());
+        userId = SharedPrefManager.getInstance(requireContext()).getUserId();
 
+        adapter = new ProductAdapter(this);
+        adapter.setFavoriteClickListener((product, isFavorite) -> {
+            favoriteRepository.toggleFavorite(userId, product.getId());
+        });
+
+        favoriteRepository.getFavoriteProductIds(userId).observe(getViewLifecycleOwner(), favIds -> {
+            adapter.setFavoriteProductIds(favIds != null ? favIds : new ArrayList<>());
+        });
+
+        binding.rvProducts.setAdapter(adapter);
         binding.viewPagerBanner.setAdapter(new BannerAdapter());
 
         viewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {

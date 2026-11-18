@@ -18,7 +18,11 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
+        android:background="#FFFFFF"
+        app:elevation="8dp"
+        app:itemIconTint="@color/customer_bottom_nav_color"
+        app:itemTextColor="@color/customer_bottom_nav_color"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/customer_bottom_menu" />
 

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_light"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -11,15 +12,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Chi tiết đơn hàng"
+        android:textColor="#111111"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="16dp"
         app:cardElevation="2dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="@color/white"
         android:layout_marginBottom="16dp">
 
         <LinearLayout
@@ -32,28 +36,34 @@
                 android:id="@+id/tvOrderInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#111111"
+                android:textSize="14sp"
                 android:text="Mã đơn: #1\nNgày đặt: 01/01/2024\nTrạng thái: Chờ xác nhận"
                 android:lineSpacingExtra="4dp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginVertical="8dp"/>
+                android:background="#F0F0F0"
+                android:layout_marginVertical="12dp"/>
 
             <TextView
                 android:id="@+id/tvDeliveryInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Người nhận: Nguyễn Văn A\nSĐT: 0123456789\nĐịa chỉ: Hà Nội"
+                android:textColor="#555555"
+                android:textSize="14sp"
+                android:text="Người nhận: Nguyễn Văn A\nSĐT: 0123456789\nĐịa chỉ: Đà Nẵng"
                 android:lineSpacingExtra="4dp"/>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sản phẩm đã đặt"
+        android:textColor="#111111"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
@@ -74,23 +84,28 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Tổng thanh toán:"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="#757575"
+            android:textSize="16sp"/>
         <TextView
             android:id="@+id/tvTotalAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 đ"
-            android:textColor="@color/primary"
+            android:text="0đ"
+            android:textColor="#E5192C"
             android:textSize="18sp"
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <Button
+    <TextView
         android:id="@+id/btnUpdateStatus"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_button_red_pill"
+        android:gravity="center"
         android:text="Cập nhật trạng thái"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
         android:visibility="gone"
         android:layout_marginTop="16dp"/>
 
