@@ -5,15 +5,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.shoestore.R;
+import com.example.shoestore.databinding.FragmentAccountBinding;
 import com.example.shoestore.model.User;
 import com.example.shoestore.repository.UserRepository;
 import com.example.shoestore.ui.activity.CustomerLoginActivity;
@@ -22,103 +22,159 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 
 public class AccountFragment extends Fragment {
+    private FragmentAccountBinding binding;
     private UserRepository userRepository;
     private User currentUser;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_account, container, false);
+        binding = FragmentAccountBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        EditText etName = view.findViewById(R.id.etName);
-        EditText etEmail = view.findViewById(R.id.etEmail);
-        EditText etPhone = view.findViewById(R.id.etPhone);
-        EditText etAddress = view.findViewById(R.id.etAddress);
-        Button btnUpdate = view.findViewById(R.id.btnUpdate);
-        Button btnLogout = view.findViewById(R.id.btnLogout);
-
         userRepository = new UserRepository(requireActivity().getApplication());
-        int userId = SharedPrefManager.getInstance(requireContext()).getUserId();
+        SharedPrefManager pref = SharedPrefManager.getInstance(requireContext());
+        int userId = pref.getUserId();
 
-        // 1. Fetch Local User Profile
+        // 1. Immediately render header from SharedPrefManager (eliminates placeholder text)
+        String prefName = pref.getUserName();
+        String prefEmail = pref.getUserEmail();
+        String prefPhone = pref.getUserPhone();
+        updateUserInfo(prefName, prefEmail, prefPhone);
+
+        // 2. Observe Room DB
         userRepository.getUserById(userId).observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
+            if (user != null && isAdded() && binding != null) {
                 currentUser = user;
-                if (etName != null) etName.setText(user.getFullName());
-                if (etEmail != null) etEmail.setText(user.getEmail());
-                if (etPhone != null) etPhone.setText(user.getPhoneNumber());
-                if (etAddress != null) etAddress.setText(user.getAddress());
+                updateUserInfo(user.getFullName(), user.getEmail(), user.getPhoneNumber());
             }
         });
 
-        // 2. Fetch Firestore User Profile for Firebase User
+        // 3. Listen to Firebase Realtime Database
+        userRepository.listenUserFromFirebase(userId, new UserRepository.OnUserResultCallback() {
+            @Override
+            public void onResult(User user) {
+                if (user != null && isAdded() && binding != null) {
+                    currentUser = user;
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (isAdded() && binding != null) {
+                                updateUserInfo(user.getFullName(), user.getEmail(), user.getPhoneNumber());
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {}
+        });
+
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         if (fUser != null) {
             String uid = fUser.getUid();
-            if (fUser.getEmail() != null && etEmail != null) {
-                etEmail.setText(fUser.getEmail());
-            }
+            String email = fUser.getEmail() != null ? fUser.getEmail() : "";
             FirebaseFirestore.getInstance().collection("users").document(uid).get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    if (documentSnapshot.getString("fullName") != null && etName != null) {
-                        etName.setText(documentSnapshot.getString("fullName"));
-                    }
-                    if (documentSnapshot.getString("phone") != null && etPhone != null) {
-                        etPhone.setText(documentSnapshot.getString("phone"));
-                    }
+                if (documentSnapshot.exists() && isAdded() && binding != null) {
+                    String name = documentSnapshot.getString("fullName");
+                    String phone = documentSnapshot.getString("phone");
+                    updateUserInfo(name, email, phone);
                 }
             });
         }
 
-        // 3. Update Profile (Local & Firestore)
-        if (btnUpdate != null) {
-            btnUpdate.setOnClickListener(v -> {
-                String name = etName != null ? etName.getText().toString().trim() : "";
-                String phone = etPhone != null ? etPhone.getText().toString().trim() : "";
-                String address = etAddress != null ? etAddress.getText().toString().trim() : "";
+        setupMenuClickListeners(view);
+    }
 
-                if (name.isEmpty() || phone.isEmpty()) {
-                    Toast.makeText(requireContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getContext() != null) {
+            SharedPrefManager pref = SharedPrefManager.getInstance(requireContext());
+            updateUserInfo(pref.getUserName(), pref.getUserEmail(), pref.getUserPhone());
+        }
+    }
 
-                FirebaseUser fUserCurrent = FirebaseAuth.getInstance().getCurrentUser();
-                if (fUserCurrent != null) {
-                    String uid = fUserCurrent.getUid();
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("fullName", name);
-                    updates.put("phone", phone);
-                    FirebaseFirestore.getInstance().collection("users").document(uid).update(updates);
-                }
-
-                if (currentUser != null) {
-                    currentUser.setFullName(name);
-                    currentUser.setPhoneNumber(phone);
-                    currentUser.setAddress(address);
-                    userRepository.update(currentUser);
-                }
-                Toast.makeText(requireContext(), "Cập nhật thông tin thành công!", Toast.LENGTH_SHORT).show();
-            });
+    private void updateUserInfo(String name, String email, String phone) {
+        if (binding == null) return;
+        if (name != null && !name.trim().isEmpty()) {
+            binding.tvUserName.setText(name);
+            binding.tvAvatar.setText(name.trim().substring(0, 1).toUpperCase(Locale.ROOT));
+        } else {
+            binding.tvUserName.setText("Khách hàng");
+            binding.tvAvatar.setText("K");
         }
 
-        // 4. Logout Action (Firebase Auth & Session)
-        if (btnLogout != null) {
-            btnLogout.setOnClickListener(v -> {
-                FirebaseAuth.getInstance().signOut();
-                SharedPrefManager.getInstance(requireContext()).logout();
-                Intent intent = new Intent(requireContext(), CustomerLoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            });
+        String emailStr = email != null ? email : "";
+        String phoneStr = phone != null ? phone : "";
+        String contactInfo;
+        if (!emailStr.isEmpty() && !phoneStr.isEmpty()) {
+            contactInfo = emailStr + " · " + phoneStr;
+        } else if (!emailStr.isEmpty()) {
+            contactInfo = emailStr;
+        } else if (!phoneStr.isEmpty()) {
+            contactInfo = phoneStr;
+        } else {
+            contactInfo = "Chưa cập nhật liên hệ";
         }
+        binding.tvUserContact.setText(contactInfo);
+    }
+
+    private void setupMenuClickListeners(View rootView) {
+        binding.menuProfileInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), com.example.shoestore.ui.activity.ProfileInfoActivity.class);
+            startActivity(intent);
+        });
+
+        binding.menuChangePassword.setOnClickListener(v ->
+            Toast.makeText(requireContext(), "Đổi mật khẩu", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.menuAddressBook.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), com.example.shoestore.ui.activity.AddressListActivity.class);
+            startActivity(intent);
+        });
+
+        binding.menuDiscounts.setOnClickListener(v ->
+            Toast.makeText(requireContext(), "Mã giảm giá", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.menuNotifications.setOnClickListener(v ->
+            Toast.makeText(requireContext(), "Thông báo", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.menuReturns.setOnClickListener(v -> {
+            try {
+                Navigation.findNavController(rootView).navigate(R.id.nav_orders);
+            } catch (Exception e) {
+                Toast.makeText(requireContext(), "Quản lý trả hàng", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.menuReviews.setOnClickListener(v ->
+            Toast.makeText(requireContext(), "Đánh giá của tôi", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.btnLogout.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            SharedPrefManager.getInstance(requireContext()).logout();
+            Intent intent = new Intent(requireContext(), CustomerLoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

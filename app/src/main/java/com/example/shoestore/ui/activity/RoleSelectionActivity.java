@@ -26,13 +26,19 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
         if (layoutRoleStaff != null) {
             layoutRoleStaff.setOnClickListener(v -> {
-                startActivity(new Intent(RoleSelectionActivity.this, StaffLoginActivity.class));
+                SharedPrefManager pref = SharedPrefManager.getInstance(this);
+                if (pref.isLoggedIn() && ("STAFF".equalsIgnoreCase(pref.getUserRole()) || "EMPLOYEE".equalsIgnoreCase(pref.getUserRole()))) {
+                    startActivity(new Intent(RoleSelectionActivity.this, StaffMainActivity.class));
+                } else {
+                    startActivity(new Intent(RoleSelectionActivity.this, StaffLoginActivity.class));
+                }
             });
         }
 
         if (layoutRoleCustomer != null) {
             layoutRoleCustomer.setOnClickListener(v -> {
-                if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+                SharedPrefManager pref = SharedPrefManager.getInstance(this);
+                if (pref.isLoggedIn() && "CUSTOMER".equalsIgnoreCase(pref.getUserRole())) {
                     startActivity(new Intent(RoleSelectionActivity.this, CustomerMainActivity.class));
                 } else {
                     startActivity(new Intent(RoleSelectionActivity.this, CustomerLoginActivity.class));
@@ -42,7 +48,12 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
         if (layoutRoleAdmin != null) {
             layoutRoleAdmin.setOnClickListener(v -> {
-                startActivity(new Intent(RoleSelectionActivity.this, AdminLoginActivity.class));
+                SharedPrefManager pref = SharedPrefManager.getInstance(this);
+                if (pref.isLoggedIn() && "ADMIN".equalsIgnoreCase(pref.getUserRole())) {
+                    startActivity(new Intent(RoleSelectionActivity.this, AdminMainActivity.class));
+                } else {
+                    startActivity(new Intent(RoleSelectionActivity.this, AdminLoginActivity.class));
+                }
             });
         }
     }

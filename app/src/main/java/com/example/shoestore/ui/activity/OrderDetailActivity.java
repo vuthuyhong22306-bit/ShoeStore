@@ -13,7 +13,7 @@ import com.example.shoestore.repository.ProductRepository;
 import com.example.shoestore.ui.adapter.OrderDetailAdapter;
 import com.example.shoestore.utils.SharedPrefManager;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -30,6 +30,11 @@ public class OrderDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOrderDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Chi tiết đơn hàng");
+        }
 
         int orderId = getIntent().getIntExtra("ORDER_ID", -1);
         orderRepository = new OrderRepository(getApplication());
@@ -56,7 +61,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     private void displayOrderInfo(Order order) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-        String info = "Mã đơn: #" + order.getId() + "\n" +
+        String info = "Mã đơn: #DH" + String.format(Locale.getDefault(), "%04d", order.getId()) + "\n" +
                      "Ngày đặt: " + sdf.format(new Date(order.getOrderDate())) + "\n" +
                      "Trạng thái: " + order.getStatus();
         binding.tvOrderInfo.setText(info);
@@ -67,8 +72,8 @@ public class OrderDetailActivity extends AppCompatActivity {
                           "Thanh toán: " + order.getPaymentMethod();
         binding.tvDeliveryInfo.setText(delivery);
 
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        binding.tvTotalAmount.setText(formatter.format(order.getTotalAmount()));
+        DecimalFormat df = new DecimalFormat("#,###");
+        binding.tvTotalAmount.setText(df.format(order.getTotalAmount()).replace(',', '.') + "đ");
     }
 
     private void checkPermissions() {
@@ -101,5 +106,11 @@ public class OrderDetailActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

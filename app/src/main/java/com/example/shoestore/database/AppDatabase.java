@@ -8,14 +8,18 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.shoestore.dao.AddressDao;
 import com.example.shoestore.dao.CartItemDao;
 import com.example.shoestore.dao.CategoryDao;
+import com.example.shoestore.dao.FavoriteDao;
 import com.example.shoestore.dao.OrderDao;
 import com.example.shoestore.dao.OrderDetailDao;
 import com.example.shoestore.dao.ProductDao;
 import com.example.shoestore.dao.UserDao;
+import com.example.shoestore.model.Address;
 import com.example.shoestore.model.CartItem;
 import com.example.shoestore.model.Category;
+import com.example.shoestore.model.Favorite;
 import com.example.shoestore.model.Order;
 import com.example.shoestore.model.OrderDetail;
 import com.example.shoestore.model.Product;
@@ -24,7 +28,7 @@ import com.example.shoestore.model.User;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Category.class, Product.class, CartItem.class, Order.class, OrderDetail.class}, version = 4, exportSchema = false)
+@Database(entities = {User.class, Category.class, Product.class, CartItem.class, Order.class, OrderDetail.class, Address.class, Favorite.class}, version = 8, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
@@ -33,6 +37,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CartItemDao cartItemDao();
     public abstract OrderDao orderDao();
     public abstract OrderDetailDao orderDetailDao();
+    public abstract AddressDao addressDao();
+    public abstract FavoriteDao favoriteDao();
 
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
@@ -53,7 +59,7 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
+    private static final RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
@@ -61,7 +67,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 UserDao userDao = INSTANCE.userDao();
                 userDao.insert(new User("Admin", "admin@shoestore.com", "123456", "0123456789", "Hà Nội", "ADMIN"));
                 userDao.insert(new User("Nguyễn Văn Staff", "staff@shoestore.com", "123456", "0987654321", "TP. HCM", "STAFF"));
-                userDao.insert(new User("Nguyễn Văn A", "customer@gmail.com", "123456", "0912345678", "Đà Nẵng", "CUSTOMER"));
+                long customerId = userDao.insert(new User("Nguyễn Văn A", "customer@gmail.com", "123456", "0912345678", "Đà Nẵng", "CUSTOMER"));
+                int userId = (int) customerId;
 
                 CategoryDao categoryDao = INSTANCE.categoryDao();
                 long nikeId = categoryDao.insert(new Category("Nike"));
@@ -73,22 +80,48 @@ public abstract class AppDatabase extends RoomDatabase {
                 String sizes = "38,39,40,41,42,43";
                 String colors = "Đen,Trắng,Xanh,Đỏ";
 
-                // High-resolution Unsplash Sneaker Image URLs for each specific product
-                productDao.insert(new Product("Nike Air Force 1", "Giày sneaker huyền thoại của Nike.", 2500000, "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80", (int)nikeId, 50, sizes, colors));
-                productDao.insert(new Product("Nike Air Jordan 1", "Giày bóng rổ biểu tượng.", 4500000, "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80", (int)nikeId, 4, sizes, colors)); // 4 items -> triggers low stock warning (<=5)
-                productDao.insert(new Product("Nike Zoom Fly", "Giày chạy bộ chuyên nghiệp.", 3200000, "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80", (int)nikeId, 25, sizes, colors));
-
+                // Products matching prompt screenshot
+                long p1Id = productDao.insert(new Product("Sneaker Runner 01", "Giày chạy bộ cao cấp.", 1290000, "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80", (int)nikeId, 10, sizes, colors));
+                long p2Id = productDao.insert(new Product("Sneaker Street 02", "Phong cách đường phố trẻ trung.", 1590000, "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80", (int)nikeId, 2, sizes, colors)); // stock = 2
+                long p3Id = productDao.insert(new Product("Sneaker Classic 04", "Thiết kế cổ điển tinh tế.", 990000, "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80", (int)adidasId, 15, sizes, colors));
+                productDao.insert(new Product("Nike Air Jordan 1", "Giày bóng rổ biểu tượng.", 4500000, "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80", (int)nikeId, 50, sizes, colors));
                 productDao.insert(new Product("Adidas UltraBoost", "Êm ái vượt trội với công nghệ Boost.", 3800000, "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9?auto=format&fit=crop&w=800&q=80", (int)adidasId, 40, sizes, colors));
-                productDao.insert(new Product("Adidas Stan Smith", "Thiết kế tối giản và thanh lịch.", 2200000, "https://images.unsplash.com/photo-1587563899343-9da745295d94?auto=format&fit=crop&w=800&q=80", (int)adidasId, 60, sizes, colors));
-                productDao.insert(new Product("Adidas NMD", "Phong cách hiện đại cho đường phố.", 3000000, "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?auto=format&fit=crop&w=800&q=80", (int)adidasId, 3, sizes, colors)); // 3 items -> triggers low stock warning (<=5)
 
-                productDao.insert(new Product("Puma RS-X", "Kiểu dáng retro và hầm hố.", 2800000, "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=800&q=80", (int)pumaId, 20, sizes, colors));
-                productDao.insert(new Product("Puma Suede", "Chất liệu da lộn cổ điển.", 1900000, "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=800&q=80", (int)pumaId, 45, sizes, colors));
-                productDao.insert(new Product("Puma Cali", "Phong cách năng động từ California.", 2100000, "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80", (int)pumaId, 30, sizes, colors));
+                // Cart Items matching Screen 2 in prompt screenshot
+                CartItemDao cartItemDao = INSTANCE.cartItemDao();
+                cartItemDao.insert(new CartItem(userId, (int)p1Id, "42", "Đen", 1));
+                cartItemDao.insert(new CartItem(userId, (int)p2Id, "41", "Trắng", 2));
+                cartItemDao.insert(new CartItem(userId, (int)p3Id, "40", "Đỏ", 1));
 
-                productDao.insert(new Product("Converse Chuck 70", "Mẫu giày cổ điển không bao giờ lỗi mốt.", 1800000, "https://images.unsplash.com/photo-1607522370275-f14206abe5d3?auto=format&fit=crop&w=800&q=80", (int)converseId, 80, sizes, colors));
-                productDao.insert(new Product("Converse Jack Purcell", "Nụ cười đặc trưng ở mũi giày.", 1700000, "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80", (int)converseId, 50, sizes, colors));
-                productDao.insert(new Product("Converse One Star", "Phong cách skate đường phố.", 1600000, "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=800&q=80", (int)converseId, 40, sizes, colors));
+                // Orders matching Screen 1 in prompt screenshot
+                OrderDao orderDao = INSTANCE.orderDao();
+                OrderDetailDao orderDetailDao = INSTANCE.orderDetailDao();
+
+                // Order #DH0125 (Chờ xác nhận, 10/11/2026, 2 items, 2.880.000đ)
+                Order o1 = new Order(userId, "Nguyễn Văn A", "0912345678", "Đà Nẵng", "COD", 2880000, 1794268800000L, "Chờ xác nhận");
+                o1.setId(125);
+                orderDao.insert(o1);
+                orderDetailDao.insert(new OrderDetail(125, (int)p1Id, "42", "Đen", 1, 1290000));
+                orderDetailDao.insert(new OrderDetail(125, (int)p2Id, "41", "Trắng", 1, 1590000));
+
+                // Order #DH0120 (Đang giao, 08/11/2026, 1 item, 1.590.000đ)
+                Order o2 = new Order(userId, "Nguyễn Văn A", "0912345678", "Đà Nẵng", "COD", 1590000, 1794096000000L, "Đang giao");
+                o2.setId(120);
+                orderDao.insert(o2);
+                orderDetailDao.insert(new OrderDetail(120, (int)p2Id, "41", "Trắng", 1, 1590000));
+
+                // Order #DH0112 (Đã hoàn thành, 02/11/2026, 1 item, 1.290.000đ)
+                Order o3 = new Order(userId, "Nguyễn Văn A", "0912345678", "Đà Nẵng", "COD", 1290000, 1793577600000L, "Đã hoàn thành");
+                o3.setId(112);
+                orderDao.insert(o3);
+                orderDetailDao.insert(new OrderDetail(112, (int)p1Id, "42", "Đen", 1, 1290000));
+
+                // Order #DH0108 (Đã hoàn thành, 28/10/2026, 1 item, 990.000đ, Trả hàng: Đã hoàn tiền)
+                Order o4 = new Order(userId, "Nguyễn Văn A", "0912345678", "Đà Nẵng", "COD", 990000, 1793145600000L, "Đã hoàn thành");
+                o4.setId(108);
+                o4.setNote("Trả hàng: Đã hoàn tiền");
+                orderDao.insert(o4);
+                orderDetailDao.insert(new OrderDetail(108, (int)p3Id, "40", "Đỏ", 1, 990000));
             });
         }
     };
