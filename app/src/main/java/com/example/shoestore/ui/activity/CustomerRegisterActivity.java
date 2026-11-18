@@ -10,14 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
 import com.example.shoestore.model.User;
 import com.example.shoestore.repository.UserRepository;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +42,6 @@ public class CustomerRegisterActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
 
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore mFirestore;
     private UserRepository userRepository;
 
     @Override
@@ -48,8 +49,6 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_register);
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
         userRepository = new UserRepository(getApplication());
 
         initViews();
@@ -135,56 +134,85 @@ public class CustomerRegisterActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Đang xử lý đăng ký...", Toast.LENGTH_SHORT).show();
 
-        // 1. Create User in Firebase Authentication
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
-            if (task.isSuccessful()) {
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                String uid = firebaseUser != null ? firebaseUser.getUid() : "";
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-                // 2. Save User Profile in Cloud Firestore (users/{uid})
-                Map<String, Object> userMap = new HashMap<>();
-                userMap.put("uid", uid);
-                userMap.put("fullName", fullName);
-                userMap.put("email", email);
-                userMap.put("phone", phone);
-                userMap.put("role", "customer");
-                userMap.put("createdAt", System.currentTimeMillis());
-                userMap.put("status", "active");
-
-                mFirestore.collection("users").document(uid).set(userMap).addOnSuccessListener(aVoid -> {
-                    // 3. Save to local Room Database
-                    User newUser = new User(fullName, email, password, phone, "Việt Nam", "customer");
-                    userRepository.registerCustomer(newUser, new UserRepository.OnUserActionCallback() {
-                        @Override
-                        public void onSuccess() {
-                            runOnUiThread(() -> {
-                                Toast.makeText(CustomerRegisterActivity.this, "Đăng ký tài khoản thành công!", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                            });
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            runOnUiThread(() -> {
-                                Toast.makeText(CustomerRegisterActivity.this, "Đăng ký thành công!", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                            });
-                        }
-                    });
-                }).addOnFailureListener(e -> {
-                    Toast.makeText(CustomerRegisterActivity.this, "Lỗi lưu dữ liệu Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-
-            } else {
-                String errorMsg = task.getException() != null ? task.getException().getMessage() : "Đăng ký thất bại";
-                if (errorMsg != null && errorMsg.contains("already in use")) {
-                    errorMsg = "Email này đã được đăng ký tài khoản!";
+        // 1. Check duplicate phone number on Firebase Realtime Database
+        usersRef.orderByChild("phoneNumber").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot phoneSnapshot) {
+                if (phoneSnapshot.exists()) {
+                    Toast.makeText(CustomerRegisterActivity.this, "Số điện thoại này đã được đăng ký tài khoản!", Toast.LENGTH_LONG).show();
+                    return;
                 }
-                Toast.makeText(CustomerRegisterActivity.this, errorMsg, Toast.LENGTH_LONG).show();
+
+                // 2. Check duplicate email on Firebase Realtime Database
+                usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot emailSnapshot) {
+                        if (emailSnapshot.exists()) {
+                            Toast.makeText(CustomerRegisterActivity.this, "Email này đã được đăng ký tài khoản!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        // 3. Compute new ID without overwriting existing IDs
+                        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot allSnapshot) {
+                                long maxId = 0;
+                                for (DataSnapshot child : allSnapshot.getChildren()) {
+                                    Long idVal = child.child("id").getValue(Long.class);
+                                    if (idVal == null) {
+                                        try {
+                                            idVal = Long.parseLong(child.getKey());
+                                        } catch (Exception ignored) {}
+                                    }
+                                    if (idVal != null && idVal > maxId) {
+                                        maxId = idVal;
+                                    }
+                                }
+                                long newId = maxId + 1;
+
+                                Map<String, Object> userMap = new HashMap<>();
+                                userMap.put("id", newId);
+                                userMap.put("fullName", fullName);
+                                userMap.put("email", email);
+                                userMap.put("password", password);
+                                userMap.put("phoneNumber", phone);
+                                userMap.put("address", "Việt Nam");
+                                userMap.put("role", "CUSTOMER");
+                                userMap.put("locked", false);
+
+                                usersRef.child(String.valueOf(newId)).setValue(userMap).addOnSuccessListener(aVoid -> {
+                                    User newUser = new User(fullName, email, password, phone, "Việt Nam", "CUSTOMER");
+                                    newUser.setId((int) newId);
+                                    userRepository.insert(newUser, null);
+
+                                    Toast.makeText(CustomerRegisterActivity.this, "Đăng ký tài khoản thành công!", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }).addOnFailureListener(e -> {
+                                    Toast.makeText(CustomerRegisterActivity.this, "Đăng ký thất bại: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(CustomerRegisterActivity.this, "Lỗi kết nối Firebase: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(CustomerRegisterActivity.this, "Lỗi kết nối Firebase: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(CustomerRegisterActivity.this, "Lỗi kết nối Firebase: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
