@@ -5,16 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.shoestore.R;
+import com.example.shoestore.databinding.FragmentCartBinding;
 import com.example.shoestore.model.CartItem;
 import com.example.shoestore.model.Product;
 import com.example.shoestore.ui.activity.CheckoutActivity;
@@ -22,45 +19,34 @@ import com.example.shoestore.ui.adapter.CartAdapter;
 import com.example.shoestore.viewmodel.CartViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class CartFragment extends Fragment {
+    private FragmentCartBinding binding;
     private CartViewModel viewModel;
     private CartAdapter adapter;
     private double totalPrice = 0;
     private List<CartItem> currentItems = new ArrayList<>();
     private List<Product> currentProducts = new ArrayList<>();
 
-    private RecyclerView rvCart;
-    private TextView tvEmptyCart;
-    private View layoutCheckout;
-    private TextView tvTotalPrice;
-    private Button btnCheckout;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cart, container, false);
+        binding = FragmentCartBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rvCart = view.findViewById(R.id.rvCart);
-        tvEmptyCart = view.findViewById(R.id.tvEmptyCart);
-        layoutCheckout = view.findViewById(R.id.layoutCheckout);
-        tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
-        btnCheckout = view.findViewById(R.id.btnCheckout);
-
         viewModel = new ViewModelProvider(this).get(CartViewModel.class);
         adapter = new CartAdapter(viewModel);
-        if (rvCart != null) rvCart.setAdapter(adapter);
+        binding.rvCart.setAdapter(adapter);
 
         viewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
             currentItems = items != null ? items : new ArrayList<>();
@@ -78,29 +64,43 @@ public class CartFragment extends Fragment {
             }
         });
 
-        if (btnCheckout != null) {
-            btnCheckout.setOnClickListener(v -> {
-                if (currentItems.isEmpty()) {
-                    Snackbar.make(view, "Giỏ hàng của bạn đang trống!", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-                Intent intent = new Intent(getContext(), CheckoutActivity.class);
-                intent.putExtra("TOTAL_PRICE", totalPrice);
-                startActivity(intent);
-            });
-        }
+        binding.btnCheckout.setOnClickListener(v -> {
+            if (currentItems.isEmpty()) {
+                Snackbar.make(view, "Giỏ hàng của bạn đang trống!", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(getContext(), CheckoutActivity.class);
+            intent.putExtra(CheckoutActivity.EXTRA_MODE, CheckoutActivity.MODE_CART);
+            intent.putExtra("TOTAL_PRICE", totalPrice);
+
+            ArrayList<Integer> cartItemIds = new ArrayList<>();
+            for (CartItem item : currentItems) {
+                cartItemIds.add(item.getId());
+            }
+            intent.putIntegerArrayListExtra(CheckoutActivity.EXTRA_CART_ITEM_IDS, cartItemIds);
+
+            startActivity(intent);
+        });
     }
 
     private void updateUI() {
         if (currentItems.isEmpty()) {
-            if (tvEmptyCart != null) tvEmptyCart.setVisibility(View.VISIBLE);
-            if (layoutCheckout != null) layoutCheckout.setVisibility(View.GONE);
+            binding.tvEmptyCart.setVisibility(View.VISIBLE);
+            binding.layoutCheckout.setVisibility(View.GONE);
+            binding.tvCartSubtitle.setText("0 sản phẩm");
             adapter.setCartItems(new ArrayList<>(), new ArrayList<>());
             totalPrice = 0;
-            if (tvTotalPrice != null) tvTotalPrice.setText("0 ₫");
+            binding.tvTotalPrice.setText("0đ");
         } else {
-            if (tvEmptyCart != null) tvEmptyCart.setVisibility(View.GONE);
-            if (layoutCheckout != null) layoutCheckout.setVisibility(View.VISIBLE);
+            binding.tvEmptyCart.setVisibility(View.GONE);
+            binding.layoutCheckout.setVisibility(View.VISIBLE);
+
+            int totalQty = 0;
+            for (CartItem item : currentItems) {
+                totalQty += item.getQuantity();
+            }
+            binding.tvCartSubtitle.setText(totalQty + " sản phẩm");
+
             adapter.setCartItems(currentItems, currentProducts);
             calculateTotal();
         }
@@ -118,7 +118,14 @@ public class CartFragment extends Fragment {
                 totalPrice += p.getPrice() * item.getQuantity();
             }
         }
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale.Builder().setLanguage("vi").setRegion("VN").build());
-        if (tvTotalPrice != null) tvTotalPrice.setText(formatter.format(totalPrice));
+        DecimalFormat df = new DecimalFormat("#,###");
+        String formattedPrice = df.format(totalPrice).replace(',', '.') + "đ";
+        binding.tvTotalPrice.setText(formattedPrice);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

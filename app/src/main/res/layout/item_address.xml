@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="12dp">
+
+    <!-- Top Row: Name and Edit action -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvRecipientName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="Hồng"
+            android:textColor="#111111"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="4dp"
+            android:text="Chỉnh sửa"
+            android:textColor="#E5192C"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- Phone Number -->
+    <TextView
+        android:id="@+id/tvPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="(+84)39*****33"
+        android:textColor="#666666"
+        android:textSize="14sp" />
+
+    <!-- Full Address -->
+    <TextView
+        android:id="@+id/tvFullAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Đường Tam Đạc 2, Thọ An, nhà số 6, cụm 7\nThọ An, Hà Nội, Việt Nam"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <!-- Default Badge -->
+    <TextView
+        android:id="@+id/tvDefaultBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_button_outline_pill"
+        android:backgroundTint="#F0F0F0"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="3dp"
+        android:text="Mặc định"
+        android:textColor="#757575"
+        android:textSize="12sp"
+        android:visibility="visible" />
+
+    <!-- Notice banner for default address if required -->
+    <LinearLayout
+        android:id="@+id/layoutNoticeBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="#F8F9FA"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cập nhật khu vực để khớp với đơn vị hành chính mới của Việt Nam"
+            android:textColor="#666666"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#EAEAEA" />
+
+</LinearLayout>

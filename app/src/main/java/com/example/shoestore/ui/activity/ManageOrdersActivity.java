@@ -30,7 +30,7 @@ public class ManageOrdersActivity extends AppCompatActivity implements OrderAdap
 
         orderRepository.getAllOrders().observe(this, orders -> {
             if (orders != null) {
-                adapter.setOrders(orders);
+                adapter.setRawOrders(orders);
             }
         });
     }
