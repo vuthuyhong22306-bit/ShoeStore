@@ -89,6 +89,31 @@ public class UserRepository {
         });
     }
 
+    public void syncUserFromFirebase(User user, OnUserResultCallback callback) {
+        executor.execute(() -> {
+            User existing = userDao.getUserByEmail(user.getEmail());
+            if (existing == null && user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty()) {
+                existing = userDao.getUserByEmailOrPhone(user.getEmail(), user.getPhoneNumber());
+            }
+            if (existing != null) {
+                user.setId(existing.getId());
+                existing.setFullName(user.getFullName());
+                existing.setEmail(user.getEmail());
+                existing.setPassword(user.getPassword());
+                existing.setPhoneNumber(user.getPhoneNumber());
+                existing.setAddress(user.getAddress());
+                existing.setRole(user.getRole());
+                existing.setLocked(user.isLocked());
+                userDao.update(existing);
+                if (callback != null) callback.onResult(existing);
+            } else {
+                long id = userDao.insert(user);
+                user.setId((int) id);
+                if (callback != null) callback.onResult(user);
+            }
+        });
+    }
+
     public LiveData<User> getUserById(int id) {
         return userDao.getUserById(id);
     }
