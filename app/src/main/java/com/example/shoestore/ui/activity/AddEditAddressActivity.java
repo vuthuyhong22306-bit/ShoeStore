@@ -53,7 +53,6 @@ public class AddEditAddressActivity extends AppCompatActivity {
         }
 
         binding.btnAllowLocation.setOnClickListener(v -> {
-            binding.etFullAddress.setText("Xã Ô Diên, Hà Nội, Việt Nam");
             Toast.makeText(this, "Đã lấy vị trí thành công!", Toast.LENGTH_SHORT).show();
             validateInput();
         });
