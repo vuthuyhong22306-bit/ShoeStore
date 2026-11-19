@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class ProductRepository {
+    public static final int LOW_STOCK_THRESHOLD = 5;
+
     private final ProductDao productDao;
     private final CategoryDao categoryDao;
     private final ExecutorService executor;

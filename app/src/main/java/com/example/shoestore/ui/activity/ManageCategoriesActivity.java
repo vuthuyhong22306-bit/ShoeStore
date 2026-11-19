@@ -14,15 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.shoestore.databinding.ActivityManageCategoriesBinding;
 import com.example.shoestore.databinding.ItemCategoryBinding;
 import com.example.shoestore.model.Category;
+import com.example.shoestore.model.Product;
 import com.example.shoestore.repository.ProductRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ManageCategoriesActivity extends AppCompatActivity {
     private ActivityManageCategoriesBinding binding;
     private ProductRepository productRepository;
     private CategoryAdapter adapter;
+    private List<Category> currentCategories = new ArrayList<>();
+    private Map<Integer, Integer> categoryProductCounts = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +36,10 @@ public class ManageCategoriesActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Quản lý danh mục");
+            getSupportActionBar().hide();
         }
+
+        binding.btnBack.setOnClickListener(v -> finish());
 
         productRepository = new ProductRepository(getApplication());
         adapter = new CategoryAdapter();
@@ -41,49 +47,77 @@ public class ManageCategoriesActivity extends AppCompatActivity {
 
         productRepository.getAllCategories().observe(this, categories -> {
             if (categories != null) {
-                adapter.setCategories(categories);
+                currentCategories = categories;
+                adapter.setCategories(categories, categoryProductCounts);
             }
         });
 
-        binding.fabAddCategory.setOnClickListener(v -> showCategoryDialog(null));
+        productRepository.getAllProducts().observe(this, products -> {
+            categoryProductCounts.clear();
+            if (products != null) {
+                for (Product p : products) {
+                    int catId = p.getCategoryId();
+                    int count = categoryProductCounts.getOrDefault(catId, 0);
+                    categoryProductCounts.put(catId, count + 1);
+                }
+            }
+            adapter.setCategories(currentCategories, categoryProductCounts);
+        });
+
+        binding.btnAddCategoryInline.setOnClickListener(v -> {
+            String name = binding.etCategoryName.getText().toString().trim();
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập tên danh mục!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            for (Category c : currentCategories) {
+                if (c.getName() != null && c.getName().equalsIgnoreCase(name)) {
+                    Toast.makeText(this, "Danh mục này đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            productRepository.insertCategory(new Category(name));
+            binding.etCategoryName.setText("");
+            Toast.makeText(this, "Đã thêm danh mục thành công", Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private void showCategoryDialog(Category category) {
+    private void showEditCategoryDialog(Category category) {
         EditText etName = new EditText(this);
-        if (category != null) etName.setText(category.getName());
+        etName.setText(category.getName());
         etName.setHint("Tên danh mục");
+        etName.setPadding(40, 30, 40, 30);
 
         new AlertDialog.Builder(this)
-                .setTitle(category == null ? "Thêm danh mục" : "Sửa danh mục")
+                .setTitle("Sửa danh mục")
                 .setView(etName)
                 .setPositiveButton("Lưu", (dialog, which) -> {
-                    String name = etName.getText().toString().trim();
-                    if (!name.isEmpty()) {
-                        if (category == null) {
-                            productRepository.insertCategory(new Category(name));
-                            com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), "Đã thêm danh mục", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-                        } else {
-                            category.setName(name);
-                            productRepository.updateCategory(category);
-                            com.google.android.material.snackbar.Snackbar.make(binding.getRoot(), "Đã cập nhật danh mục", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                    String newName = etName.getText().toString().trim();
+                    if (!newName.isEmpty()) {
+                        for (Category c : currentCategories) {
+                            if (c.getId() != category.getId() && c.getName() != null && c.getName().equalsIgnoreCase(newName)) {
+                                Toast.makeText(ManageCategoriesActivity.this, "Tên danh mục đã tồn tại!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
+                        category.setName(newName);
+                        productRepository.updateCategory(category);
+                        Toast.makeText(ManageCategoriesActivity.this, "Đã cập nhật danh mục", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
     class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
         private List<Category> categories = new ArrayList<>();
+        private Map<Integer, Integer> productCounts = new HashMap<>();
 
-        public void setCategories(List<Category> categories) {
-            this.categories = categories;
+        public void setCategories(List<Category> categories, Map<Integer, Integer> productCounts) {
+            this.categories = categories != null ? categories : new ArrayList<>();
+            this.productCounts = productCounts != null ? productCounts : new HashMap<>();
             notifyDataSetChanged();
         }
 
@@ -114,11 +148,19 @@ public class ManageCategoriesActivity extends AppCompatActivity {
 
             public void bind(Category category) {
                 binding.tvCategoryName.setText(category.getName());
-                binding.btnEdit.setOnClickListener(v -> showCategoryDialog(category));
+                int count = productCounts.getOrDefault(category.getId(), 0);
+                binding.tvProductCount.setText(count + " sản phẩm");
+
+                binding.btnEdit.setOnClickListener(v -> showEditCategoryDialog(category));
                 binding.btnDelete.setOnClickListener(v -> {
+                    if (count > 0) {
+                        Toast.makeText(ManageCategoriesActivity.this, "Không thể xóa danh mục đang có " + count + " sản phẩm!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     new AlertDialog.Builder(ManageCategoriesActivity.this)
                             .setTitle("Xóa danh mục")
-                            .setMessage("Bạn có chắc chắn muốn xóa danh mục này?")
+                            .setMessage("Bạn có chắc chắn muốn xóa danh mục \"" + category.getName() + "\"?")
                             .setPositiveButton("Xóa", (dialog, which) -> {
                                 productRepository.deleteCategory(category, new ProductRepository.OnDeleteCategoryCallback() {
                                     @Override

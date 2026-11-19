@@ -72,4 +72,11 @@
         <item name="android:textColor">@color/primary</item>
         <item name="android:textSize">@dimen/text_size_subtitle</item>
     </style>
+
+    <!-- Theme for Admin Activities -->
+    <style name="Theme.ShoeStore.Admin" parent="Base.Theme.ShoeStore">
+        <item name="android:windowBackground">@color/admin_bg_color</item>
+        <item name="android:statusBarColor">#1C1C1E</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
 </resources>

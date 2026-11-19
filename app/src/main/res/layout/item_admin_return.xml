@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#EEEEEE"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Line 1: Order Code & Status Badge -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvReturnOrderCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đơn #DH0112"
+                android:textColor="#1C1C1E"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:id="@+id/tvReturnStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chờ duyệt"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#D0343C"
+                android:background="@drawable/bg_badge_pink"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+
+        <!-- Line 2: Customer Name & Return Reason -->
+        <TextView
+            android:id="@+id/tvReturnSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nguyễn Văn A · Lý do: Sai size"
+            android:textColor="#6B6B6B"
+            android:textSize="13.5sp"
+            android:layout_marginTop="6dp" />
+
+        <!-- Line 3: 4-Step Stepper Timeline -->
+        <LinearLayout
+            android:id="@+id/layoutStepper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:weightSum="4">
+
+            <!-- Step 1: Chờ duyệt -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <View
+                    android:id="@+id/dotStep1"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/bg_stepper_dot_active" />
+
+                <TextView
+                    android:id="@+id/tvLabelStep1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chờ duyệt"
+                    android:textSize="11sp"
+                    android:textColor="#1C1C1E"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- Step 2: Chấp nhận -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <View
+                    android:id="@+id/dotStep2"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/bg_stepper_dot_inactive" />
+
+                <TextView
+                    android:id="@+id/tvLabelStep2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chấp nhận"
+                    android:textSize="11sp"
+                    android:textColor="#8E8E93"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- Step 3: Đã nhận hàng -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <View
+                    android:id="@+id/dotStep3"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/bg_stepper_dot_inactive" />
+
+                <TextView
+                    android:id="@+id/tvLabelStep3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đã nhận hàng"
+                    android:textSize="11sp"
+                    android:textColor="#8E8E93"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- Step 4: Hoàn tiền -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <View
+                    android:id="@+id/dotStep4"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/bg_stepper_dot_inactive" />
+
+                <TextView
+                    android:id="@+id/tvLabelStep4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hoàn tiền"
+                    android:textSize="11sp"
+                    android:textColor="#8E8E93"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Line 4: Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="Từ chối"
+                android:textColor="#1C1C1E"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_admin_outlined"
+                android:paddingHorizontal="16dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnApprove"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginStart="10dp"
+                android:text="Duyệt"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_admin_red"
+                android:paddingHorizontal="16dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnReprocess"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="Xử lý lại"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_admin_red"
+                android:paddingHorizontal="16dp"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnConfirmRefund"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="Xác nhận hoàn tiền"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_admin_black"
+                android:paddingHorizontal="16dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

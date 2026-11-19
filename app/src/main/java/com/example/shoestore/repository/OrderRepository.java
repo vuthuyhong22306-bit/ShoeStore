@@ -251,6 +251,10 @@ public class OrderRepository {
         return orderDetailDao.getOrderDetails(orderId);
     }
 
+    public LiveData<List<OrderDetail>> getAllOrderDetails() {
+        return orderDetailDao.getAllOrderDetails();
+    }
+
     public void updateOrderStatus(Order order) {
         executor.execute(() -> {
             orderDao.update(order);
