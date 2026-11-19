@@ -137,8 +137,14 @@ public class OrderRepository {
     public void requestReturnOrder(Order order, String note, Runnable onComplete) {
         executor.execute(() -> {
             String noteStr = note != null ? note : "Trả hàng: Đã hoàn tiền";
+            order.setStatus("Yêu cầu trả hàng");
             order.setNote(noteStr);
             orderDao.update(order);
+            com.google.firebase.database.FirebaseDatabase.getInstance()
+                    .getReference("orders")
+                    .child(String.valueOf(order.getId()))
+                    .child("status")
+                    .setValue("Yêu cầu trả hàng");
             com.google.firebase.database.FirebaseDatabase.getInstance()
                     .getReference("orders")
                     .child(String.valueOf(order.getId()))
@@ -147,6 +153,100 @@ public class OrderRepository {
             if (onComplete != null) {
                 onComplete.run();
             }
+        });
+    }
+
+    public void acceptReturnOrder(Order order, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã chấp nhận");
+            orderDao.update(order);
+            com.google.firebase.database.FirebaseDatabase.getInstance()
+                    .getReference("orders")
+                    .child(String.valueOf(order.getId()))
+                    .child("status")
+                    .setValue("Đã chấp nhận");
+            try {
+                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("orders")
+                        .document(String.valueOf(order.getId()))
+                        .update("status", "Đã chấp nhận");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (onComplete != null) onComplete.run();
+        });
+    }
+
+    public void rejectReturnOrder(Order order, String reason, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã từ chối");
+            if (reason != null && !reason.trim().isEmpty()) {
+                order.setNote("Từ chối: " + reason.trim());
+            }
+            orderDao.update(order);
+            com.google.firebase.database.FirebaseDatabase.getInstance()
+                    .getReference("orders")
+                    .child(String.valueOf(order.getId()))
+                    .child("status")
+                    .setValue("Đã từ chối");
+            try {
+                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("orders")
+                        .document(String.valueOf(order.getId()))
+                        .update("status", "Đã từ chối");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (onComplete != null) onComplete.run();
+        });
+    }
+
+    public void confirmReceivedReturnGoods(Order order, Runnable onComplete) {
+        executor.execute(() -> {
+            // Restore inventory stock for each detail item
+            List<OrderDetail> details = orderDetailDao.getOrderDetailsList(order.getId());
+            if (details != null) {
+                for (OrderDetail detail : details) {
+                    productDao.increaseStock(detail.getProductId(), detail.getQuantity());
+                }
+            }
+            order.setStatus("Đã nhận hàng trả");
+            orderDao.update(order);
+            com.google.firebase.database.FirebaseDatabase.getInstance()
+                    .getReference("orders")
+                    .child(String.valueOf(order.getId()))
+                    .child("status")
+                    .setValue("Đã nhận hàng trả");
+            try {
+                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("orders")
+                        .document(String.valueOf(order.getId()))
+                        .update("status", "Đã nhận hàng trả");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (onComplete != null) onComplete.run();
+        });
+    }
+
+    public void confirmRefund(Order order, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã hoàn trả");
+            orderDao.update(order);
+            com.google.firebase.database.FirebaseDatabase.getInstance()
+                    .getReference("orders")
+                    .child(String.valueOf(order.getId()))
+                    .child("status")
+                    .setValue("Đã hoàn trả");
+            try {
+                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("orders")
+                        .document(String.valueOf(order.getId()))
+                        .update("status", "Đã hoàn trả");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (onComplete != null) onComplete.run();
         });
     }
 

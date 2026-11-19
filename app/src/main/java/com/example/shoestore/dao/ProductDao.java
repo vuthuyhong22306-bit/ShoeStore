@@ -39,4 +39,7 @@ public interface ProductDao {
 
     @Query("UPDATE products SET stock = stock - :quantity WHERE id = :productId")
     void reduceStock(int productId, int quantity);
+
+    @Query("UPDATE products SET stock = stock + :quantity WHERE id = :productId")
+    void increaseStock(int productId, int quantity);
 }

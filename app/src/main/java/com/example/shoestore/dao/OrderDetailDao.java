@@ -16,4 +16,7 @@ public interface OrderDetailDao {
 
     @Query("SELECT * FROM order_details WHERE orderId = :orderId")
     LiveData<List<OrderDetail>> getOrderDetails(int orderId);
+
+    @Query("SELECT * FROM order_details WHERE orderId = :orderId")
+    List<OrderDetail> getOrderDetailsList(int orderId);
 }
