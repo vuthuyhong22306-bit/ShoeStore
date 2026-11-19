@@ -3,60 +3,103 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#EEEEEE"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="14dp"
         android:gravity="center_vertical">
 
-        <ImageView
-            android:id="@+id/ivProduct"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:scaleType="centerCrop"/>
+        <!-- Image Thumbnail Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F9E3E4">
 
+            <ImageView
+                android:id="@+id/ivProduct"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_sneaker_placeholder"
+                android:contentDescription="Ảnh sản phẩm" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Product Details Info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="12dp">
+            android:paddingStart="14dp"
+            android:paddingEnd="8dp">
 
             <TextView
                 android:id="@+id/tvProductName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
+                android:text="Sneaker Runner 01"
+                android:textColor="#1C1C1E"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvProductCategoryAndStock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Running · Tồn: 23"
+                android:textColor="#6B6B6B"
+                android:textSize="13sp"
+                android:layout_marginTop="3dp" />
 
             <TextView
                 android:id="@+id/tvProductPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/primary"
-                android:textSize="14sp"/>
+                android:text="1.290.000đ"
+                android:textColor="#D0343C"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
+
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnEdit"
+        <!-- Action Buttons (Pencil Edit & Trash Delete) -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_edit"
-            android:background="?attr/selectableItemBackground"/>
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_delete"
-            android:background="?attr/selectableItemBackground"
-            app:tint="@android:color/holo_red_dark"/>
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/ic_edit_pencil"
+                android:background="@drawable/bg_admin_circle_icon_btn"
+                android:contentDescription="Sửa" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_delete_trash"
+                app:tint="#D0343C"
+                android:background="@drawable/bg_admin_circle_icon_btn"
+                android:contentDescription="Xóa" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

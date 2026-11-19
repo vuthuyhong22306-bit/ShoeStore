@@ -5,12 +5,17 @@ import java.io.Serializable;
 public class Coupon implements Serializable {
     private String code;
     private int discountPercent;
+    private double discountAmount;
     private double minOrderValue;
     private String description;
     private String expiryDate;
     private boolean isAvailable;
+    private int usedCount;
+    private int maxUsage;
 
     public Coupon() {
+        this.isAvailable = true;
+        this.maxUsage = 100;
     }
 
     public Coupon(String code, int discountPercent, double minOrderValue, String description, String expiryDate, boolean isAvailable) {
@@ -20,6 +25,7 @@ public class Coupon implements Serializable {
         this.description = description;
         this.expiryDate = expiryDate;
         this.isAvailable = isAvailable;
+        this.maxUsage = 100;
     }
 
     public String getCode() {
@@ -36,6 +42,14 @@ public class Coupon implements Serializable {
 
     public void setDiscountPercent(int discountPercent) {
         this.discountPercent = discountPercent;
+    }
+
+    public double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public double getMinOrderValue() {
@@ -68,5 +82,21 @@ public class Coupon implements Serializable {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
+    }
+
+    public int getUsedCount() {
+        return usedCount;
+    }
+
+    public void setUsedCount(int usedCount) {
+        this.usedCount = usedCount;
+    }
+
+    public int getMaxUsage() {
+        return maxUsage > 0 ? maxUsage : 100;
+    }
+
+    public void setMaxUsage(int maxUsage) {
+        this.maxUsage = maxUsage;
     }
 }
