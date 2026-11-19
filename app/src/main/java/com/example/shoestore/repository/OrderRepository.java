@@ -273,4 +273,116 @@ public class OrderRepository {
             // Cloud Firestore Updates
             try {
                 Map<String, Object> updates = new HashMap<>();
-                updates.
+                updates.put("status", order.getStatus());
+                if (order.getNote() != null) {
+                    updates.put("note", order.getNote());
+                }
+                FirebaseFirestore.getInstance()
+                        .collection("orders")
+                        .document(orderIdStr)
+                        .update(updates);
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating status in Firestore: " + e.getMessage());
+            }
+        });
+    }
+
+    public void cancelOrder(Order order, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã hủy");
+            updateOrderStatus(order);
+            if (onComplete != null) {
+                onComplete.run();
+            }
+        });
+    }
+
+    public void requestReturnOrder(Order order, String note, Runnable onComplete) {
+        executor.execute(() -> {
+            String noteStr = note != null ? note : "Yêu cầu trả hàng";
+            order.setStatus("Yêu cầu trả hàng");
+            order.setNote(noteStr);
+            updateOrderStatus(order);
+            if (onComplete != null) {
+                onComplete.run();
+            }
+        });
+    }
+
+    public void acceptReturnOrder(Order order, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã chấp nhận");
+            updateOrderStatus(order);
+            if (onComplete != null) {
+                onComplete.run();
+            }
+        });
+    }
+
+    public void rejectReturnOrder(Order order, String reason, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã từ chối");
+            String noteStr = (order.getNote() != null ? order.getNote() + "\n" : "") + "Từ chối: " + reason;
+            order.setNote(noteStr);
+            updateOrderStatus(order);
+            if (onComplete != null) {
+                onComplete.run();
+            }
+        });
+    }
+
+    public void confirmReceivedReturnGoods(Order order, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã nhận hàng trả");
+            updateOrderStatus(order);
+
+            List<OrderDetail> details = orderDetailDao.getOrderDetailsList(order.getId());
+            if (details != null) {
+                for (OrderDetail d : details) {
+                    productDao.increaseStock(d.getProductId(), d.getQuantity());
+                }
+            }
+
+            if (onComplete != null) {
+                onComplete.run();
+            }
+        });
+    }
+
+    public void confirmRefund(Order order, Runnable onComplete) {
+        executor.execute(() -> {
+            order.setStatus("Đã hoàn tiền");
+            updateOrderStatus(order);
+            if (onComplete != null) {
+                onComplete.run();
+            }
+        });
+    }
+
+    public void listenOrdersFromFirebase(ValueEventListener listener) {
+        FirebaseDatabase.getInstance()
+                .getReference("orders")
+                .addValueEventListener(listener);
+    }
+
+    public LiveData<Integer> getTotalOrdersCount() {
+        return orderDao.getTotalOrders();
+    }
+
+    public LiveData<Double> getTotalRevenue() {
+        return orderDao.getTotalRevenue();
+    }
+
+    public LiveData<List<RevenueByDate>> getDailyRevenue() {
+        return orderDao.getDailyRevenue();
+    }
+
+    public LiveData<List<RevenueByDate>> getMonthlyRevenue() {
+        return orderDao.getMonthlyRevenue();
+    }
+
+    public interface OnOrderCallback {
+        void onSuccess();
+        default void onError(String message) {}
+    }
+}
