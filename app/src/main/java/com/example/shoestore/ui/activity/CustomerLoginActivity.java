@@ -276,6 +276,19 @@ public class CustomerLoginActivity extends AppCompatActivity {
     }
 
     private void navigateByRole(String role) {
+        int pendingOrderId = getIntent().getIntExtra("ORDER_ID", -1);
+        if (pendingOrderId <= 0) {
+            pendingOrderId = getIntent().getIntExtra("PENDING_NOTIF_ORDER_ID", -1);
+        }
+
+        if (pendingOrderId > 0) {
+            Intent detailIntent = new Intent(this, OrderDetailActivity.class);
+            detailIntent.putExtra("ORDER_ID", pendingOrderId);
+            startActivity(detailIntent);
+            finish();
+            return;
+        }
+
         Intent intent;
         if ("admin".equalsIgnoreCase(role)) {
             intent = new Intent(this, AdminMainActivity.class);
