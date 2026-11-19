@@ -5,4 +5,24 @@
         <item>Giá thấp đến cao</item>
         <item>Giá cao đến thấp</item>
     </string-array>
+
+    <!-- Return Requests & Notifications Strings -->
+    <string name="staff_title">Nhân viên</string>
+    <string name="return_request_title">Yêu cầu trả hàng</string>
+    <string name="tab_pending">Chờ duyệt</string>
+    <string name="tab_accepted">Đã chấp nhận</string>
+    <string name="tab_received">Đã nhận hàng trả</string>
+    <string name="empty_return_list">Không có yêu cầu trả hàng nào trong mục này.</string>
+    <string name="view_related_order">Xem đơn hàng liên quan</string>
+    <string name="reject_reason_hint">Lý do (bắt buộc khi từ chối)</string>
+    <string name="btn_reject">Từ chối</string>
+    <string name="btn_accept">Chấp nhận</string>
+    <string name="btn_confirm_received">Xác nhận đã nhận hàng trả</string>
+    <string name="stock_auto_increment_hint">Tồn kho sẽ được cộng lại tự động.</string>
+    <string name="btn_confirm_refund">Xác nhận hoàn tiền</string>
+
+    <string name="notif_channel_name">Thông báo đơn hàng mới</string>
+    <string name="notif_channel_desc">Kênh nhận thông báo về đơn hàng mới cho hệ thống ShoeStore</string>
+    <string name="notif_default_title">Đơn hàng mới!</string>
+    <string name="notif_default_body">Có đơn hàng mới vừa được khởi tạo.</string>
 </resources>

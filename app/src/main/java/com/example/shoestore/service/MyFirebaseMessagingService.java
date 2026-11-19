@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.shoestore.R;
-import com.example.shoestore.ui.activity.CustomerLoginActivity;
 import com.example.shoestore.ui.activity.OrderDetailActivity;
 import com.example.shoestore.ui.activity.RoleSelectionActivity;
 import com.example.shoestore.utils.SharedPrefManager;

@@ -6,37 +6,32 @@
     android:background="#F8F9FA"
     android:orientation="vertical">
 
-    <!-- Header Area matching prompt design -->
-    <RelativeLayout
+    <!-- Header Area -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_header_dark"
+        android:orientation="vertical"
         android:paddingHorizontal="20dp"
         android:paddingTop="28dp"
         android:paddingBottom="24dp">
 
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="@string/staff_title"
+            android:textColor="#B0BEC5"
+            android:textSize="13sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nhân viên"
-                android:textColor="#B0BEC5"
-                android:textSize="13sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Yêu cầu trả hàng"
-                android:textColor="#FFFFFF"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/return_request_title"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <!-- Filter Tabs (Thanh lọc trạng thái) -->
     <HorizontalScrollView
@@ -63,7 +58,7 @@
                 android:foreground="?attr/selectableItemBackground"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:text="Chờ duyệt"
+                android:text="@string/tab_pending"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -79,7 +74,7 @@
                 android:foreground="?attr/selectableItemBackground"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:text="Đã chấp nhận"
+                android:text="@string/tab_accepted"
                 android:textColor="#333333"
                 android:textSize="14sp" />
 
@@ -94,7 +89,7 @@
                 android:foreground="?attr/selectableItemBackground"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:text="Đã nhận hàng trả"
+                android:text="@string/tab_received"
                 android:textColor="#333333"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -119,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="Không có yêu cầu trả hàng nào trong mục này."
+            android:text="@string/empty_return_list"
             android:textColor="#757575"
             android:textSize="14sp"
             android:visibility="gone" />
