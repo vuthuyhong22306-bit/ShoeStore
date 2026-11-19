@@ -110,18 +110,26 @@ public abstract class AppDatabase extends RoomDatabase {
                 orderDao.insert(o2);
                 orderDetailDao.insert(new OrderDetail(120, (int)p2Id, "41", "Trắng", 1, 1590000));
 
-                // Order #DH0112 (Đã hoàn thành, 02/11/2026, 1 item, 1.290.000đ)
-                Order o3 = new Order(userId, "Nguyễn Văn A", "0912345678", "Đà Nẵng", "COD", 1290000, 1793577600000L, "Đã hoàn thành");
+                // Order #DH0112 (Yêu cầu trả hàng, Chờ duyệt: Nguyễn Văn A · Sneaker Runner 01 · Size 42 · Lý do: Sai size)
+                Order o3 = new Order(userId, "Nguyễn Văn A", "0912345678", "Đà Nẵng", "COD", 1290000, 1793577600000L, "Yêu cầu trả hàng");
                 o3.setId(112);
+                o3.setNote("Sai size");
                 orderDao.insert(o3);
                 orderDetailDao.insert(new OrderDetail(112, (int)p1Id, "42", "Đen", 1, 1290000));
 
-                // Order #DH0108 (Đã hoàn thành, 28/10/2026, 1 item, 990.000đ, Trả hàng: Đã hoàn tiền)
-                Order o4 = new Order(userId, "Nguyễn Văn A", "0912345678", "Đà Nẵng", "COD", 990000, 1793145600000L, "Đã hoàn thành");
+                // Order #DH0108 (Đã chấp nhận: Trần Thị B · Sneaker Street 02 · Lý do: Sản phẩm lỗi)
+                Order o4 = new Order(userId, "Trần Thị B", "0987654321", "Hà Nội", "COD", 1590000, 1793145600000L, "Đã chấp nhận");
                 o4.setId(108);
-                o4.setNote("Trả hàng: Đã hoàn tiền");
+                o4.setNote("Sản phẩm lỗi");
                 orderDao.insert(o4);
-                orderDetailDao.insert(new OrderDetail(108, (int)p3Id, "40", "Đỏ", 1, 990000));
+                orderDetailDao.insert(new OrderDetail(108, (int)p2Id, "41", "Trắng", 1, 1590000));
+
+                // Order #DH0101 (Đã nhận hàng trả: Lê Văn C · Sneaker Classic 04 · Lý do: Không đúng mô tả)
+                Order o5 = new Order(userId, "Lê Văn C", "0933445566", "TP. HCM", "COD", 990000, 1792900000000L, "Đã nhận hàng trả");
+                o5.setId(101);
+                o5.setNote("Không đúng mô tả");
+                orderDao.insert(o5);
+                orderDetailDao.insert(new OrderDetail(101, (int)p3Id, "40", "Đỏ", 1, 990000));
             });
         }
     };
