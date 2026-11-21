@@ -71,7 +71,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
 
     private void setupListeners() {
         View.OnClickListener goToLogin = v -> {
-            Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
+            Intent intent = new Intent(CustomerRegisterActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
@@ -188,7 +188,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
                                     userRepository.insert(newUser, null);
 
                                     Toast.makeText(CustomerRegisterActivity.this, "Đăng ký tài khoản thành công!", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
+                                    Intent intent = new Intent(CustomerRegisterActivity.this, LoginActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }).addOnFailureListener(e -> {

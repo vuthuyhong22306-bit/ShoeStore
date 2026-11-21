@@ -56,11 +56,18 @@ public class AdminMainActivity extends AppCompatActivity {
 
         // Header Logout
         binding.btnLogoutAdmin.setOnClickListener(v -> {
-            SharedPrefManager.getInstance(this).logout();
-            Intent intent = new Intent(AdminMainActivity.this, RoleSelectionActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.msg_confirm_logout_title)
+                    .setMessage(R.string.msg_confirm_logout_admin)
+                    .setPositiveButton(R.string.btn_logout, (dialog, which) -> {
+                        SharedPrefManager.getInstance(this).logout();
+                        Intent intent = new Intent(AdminMainActivity.this, CustomerMainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .setNegativeButton(R.string.btn_cancel, null)
+                    .show();
         });
 
         // Total Orders Count

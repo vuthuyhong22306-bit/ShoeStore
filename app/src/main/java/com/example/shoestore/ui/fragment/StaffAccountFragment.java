@@ -10,9 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.shoestore.R;
 import com.example.shoestore.databinding.FragmentStaffAccountBinding;
-import com.example.shoestore.ui.activity.CustomerLoginActivity;
-import com.example.shoestore.ui.activity.RoleSelectionActivity;
+import com.example.shoestore.ui.activity.CustomerMainActivity;
 import com.example.shoestore.utils.SharedPrefManager;
 
 public class StaffAccountFragment extends Fragment {
@@ -39,10 +39,17 @@ public class StaffAccountFragment extends Fragment {
 
     private void performLogout() {
         if (getContext() == null) return;
-        SharedPrefManager.getInstance(getContext()).logout();
-        Intent intent = new Intent(getContext(), RoleSelectionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.msg_confirm_logout_title)
+                .setMessage(R.string.msg_confirm_logout_staff)
+                .setPositiveButton(R.string.btn_logout, (dialog, which) -> {
+                    SharedPrefManager.getInstance(getContext()).logout();
+                    Intent intent = new Intent(getContext(), CustomerMainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                })
+                .setNegativeButton(R.string.btn_cancel, null)
+                .show();
     }
 
     @Override

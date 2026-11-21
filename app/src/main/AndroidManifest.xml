@@ -15,7 +15,7 @@
         android:theme="@style/Theme.ShoeStore">
 
         <activity
-            android:name=".ui.activity.RoleSelectionActivity"
+            android:name=".ui.activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,32 +23,25 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.SplashActivity" />
         <activity
-            android:name=".ui.activity.StaffLoginActivity"
+            android:name=".ui.activity.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.CustomerMainActivity"
             android:exported="true" />
         <activity
             android:name=".ui.activity.StaffMainActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.activity.AdminLoginActivity"
+            android:name=".ui.activity.AdminMainActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.activity.AdminMainActivity"
+            android:name=".ui.activity.CustomerRegisterActivity"
             android:exported="true" />
         <activity android:name=".ui.activity.AdminAccountsActivity" />
         <activity android:name=".ui.activity.AdminReturnsActivity" />
         <activity android:name=".ui.activity.AdminDiscountsActivity" />
         <activity android:name=".ui.activity.AdminReviewsActivity" />
-        <activity
-            android:name=".ui.activity.CustomerLoginActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.activity.CustomerRegisterActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.activity.CustomerMainActivity"
-            android:exported="true" />
         <activity android:name=".ui.activity.ProductDetailActivity" />
         <activity android:name=".ui.activity.CheckoutActivity" />
         <activity android:name=".ui.activity.OrderDetailActivity" />
