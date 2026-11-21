@@ -16,7 +16,7 @@ import com.example.shoestore.R;
 import com.example.shoestore.databinding.FragmentAccountBinding;
 import com.example.shoestore.model.User;
 import com.example.shoestore.repository.UserRepository;
-import com.example.shoestore.ui.activity.CustomerLoginActivity;
+import com.example.shoestore.ui.activity.LoginActivity;
 import com.example.shoestore.utils.SharedPrefManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -166,7 +166,7 @@ public class AccountFragment extends Fragment {
         binding.btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             SharedPrefManager.getInstance(requireContext()).logout();
-            Intent intent = new Intent(requireContext(), CustomerLoginActivity.class);
+            Intent intent = new Intent(requireContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });

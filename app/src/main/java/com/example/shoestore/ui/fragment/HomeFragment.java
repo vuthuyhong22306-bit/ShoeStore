@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.shoestore.R;
 import com.example.shoestore.databinding.FragmentHomeBinding;
 import com.example.shoestore.model.Category;
 import com.example.shoestore.model.Product;
@@ -53,12 +54,20 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
 
         adapter = new ProductAdapter(this);
         adapter.setFavoriteClickListener((product, isFavorite) -> {
+            if (!SharedPrefManager.getInstance(requireContext()).isLoggedIn()) {
+                android.widget.Toast.makeText(requireContext(), R.string.msg_please_login, android.widget.Toast.LENGTH_SHORT).show();
+                return;
+            }
             favoriteRepository.toggleFavorite(userId, product.getId());
         });
 
-        favoriteRepository.getFavoriteProductIds(userId).observe(getViewLifecycleOwner(), favIds -> {
-            adapter.setFavoriteProductIds(favIds != null ? favIds : new ArrayList<>());
-        });
+        if (SharedPrefManager.getInstance(requireContext()).isLoggedIn() && userId > 0) {
+            favoriteRepository.getFavoriteProductIds(userId).observe(getViewLifecycleOwner(), favIds -> {
+                adapter.setFavoriteProductIds(favIds != null ? favIds : new ArrayList<>());
+            });
+        } else {
+            adapter.setFavoriteProductIds(new ArrayList<>());
+        }
 
         binding.rvProducts.setAdapter(adapter);
         binding.viewPagerBanner.setAdapter(new BannerAdapter());
