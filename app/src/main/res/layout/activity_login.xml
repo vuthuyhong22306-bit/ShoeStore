@@ -15,22 +15,6 @@
         android:src="@drawable/bg_red_blob_top"
         android:contentDescription="Red Top Blob" />
 
-    <!-- Top Back Arrow Button -->
-    <ImageView
-        android:id="@+id/btnBackTop"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_arrow_back_white"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Back Button Top" />
-
     <!-- Top-Right Soft Pink Background Blob -->
     <ImageView
         android:layout_width="220dp"
@@ -53,6 +37,16 @@
         android:src="@drawable/bg_pink_soft_circle"
         android:contentDescription="Pink Bottom Blob" />
 
+    <!-- Bottom-Right Organic Red Fluid Blob -->
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="140dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitEnd"
+        android:src="@drawable/bg_red_blob_bottom"
+        android:contentDescription="Red Bottom Blob" />
+
     <!-- Main Scroll Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -64,7 +58,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="28dp"
-            android:paddingTop="50dp"
+            android:paddingTop="60dp"
             android:paddingBottom="40dp"
             android:gravity="center_horizontal">
 
@@ -100,7 +94,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginTop="6dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="32dp">
 
                 <View
                     android:layout_width="36dp"
@@ -110,7 +104,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dành cho nhân viên"
+                    android:text="Sneaker for a better you"
                     android:textSize="13sp"
                     android:textColor="#222222"
                     android:letterSpacing="0.08"
@@ -123,20 +117,12 @@
 
             </LinearLayout>
 
-            <!-- Staff Avatar Badge -->
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_staff_avatar_red"
-                android:layout_marginBottom="16dp"
-                android:contentDescription="Staff Avatar" />
-
             <!-- Title Heading -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đăng nhập nhân viên"
-                android:textSize="24sp"
+                android:text="Đăng nhập"
+                android:textSize="26sp"
                 android:textStyle="bold"
                 android:textColor="#111111"
                 android:gravity="center" />
@@ -144,14 +130,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vui lòng đăng nhập để tiếp tục"
+                android:text="Chào mừng bạn đến với ShoeStore!"
                 android:textSize="14sp"
                 android:textColor="#666666"
                 android:gravity="center"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="28dp" />
 
-            <!-- Input 1: Tên đăng nhập -->
+            <!-- Input 1: Tên đăng nhập / Số điện thoại / Email -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
@@ -159,24 +145,24 @@
                 android:background="@drawable/bg_input_pill_outlined">
 
                 <ImageView
-                    android:id="@+id/ivUserIcon"
+                    android:id="@+id/ivAccountIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="18dp"
                     android:src="@drawable/ic_person_grey"
-                    android:contentDescription="Username Icon" />
+                    android:contentDescription="Account Icon" />
 
                 <EditText
-                    android:id="@+id/etUsername"
+                    android:id="@+id/etAccount"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toEndOf="@id/ivUserIcon"
+                    android:layout_toEndOf="@id/ivAccountIcon"
                     android:layout_marginStart="14dp"
                     android:layout_marginEnd="18dp"
                     android:background="@null"
-                    android:hint="Tên đăng nhập"
+                    android:hint="Tên đăng nhập / SĐT / Email"
                     android:textColor="#111111"
                     android:textColorHint="#999999"
                     android:textSize="15sp"
@@ -188,7 +174,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_input_pill_outlined">
 
                 <ImageView
@@ -230,6 +216,46 @@
 
             </RelativeLayout>
 
+            <!-- Row: Checkbox Remember Me & Forgot Password -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp">
+
+                <CheckBox
+                    android:id="@+id/cbRememberMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="Ghi nhớ đăng nhập"
+                    android:textSize="13sp"
+                    android:textColor="#333333"
+                    android:checked="true"
+                    android:buttonTint="#E5192C" />
+
+                <TextView
+                    android:id="@+id/tvForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="Quên mật khẩu?"
+                    android:textSize="13sp"
+                    android:textColor="#E5192C"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <!-- Loading ProgressBar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginBottom="16dp"
+                android:indeterminateTint="#E5192C"
+                android:visibility="gone" />
+
             <!-- Main Action Button: Đăng nhập -->
             <RelativeLayout
                 android:id="@+id/btnLogin"
@@ -248,73 +274,72 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_login_door_white"
-                        android:contentDescription="Login Door" />
-
                     <TextView
+                        android:id="@+id/tvBtnLogin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đăng nhập"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginStart="10dp" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-            <!-- Bottom Back Action Button -->
-            <RelativeLayout
-                android:id="@+id/btnBack"
-                android:layout_width="180dp"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_button_outline_black"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                        android:textColor="#FFFFFF" />
 
                     <ImageView
+                        android:id="@+id/ivBtnArrow"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/ic_chevron_left_black"
-                        android:contentDescription="Chevron Left" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Quay lại"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="#111111"
-                        android:layout_marginStart="8dp" />
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_chevron_right_white"
+                        android:contentDescription="Arrow Right" />
 
                 </LinearLayout>
 
             </RelativeLayout>
+
+            <!-- Footer Register Link -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chưa có tài khoản? "
+                    android:textSize="13sp"
+                    android:textColor="#757575" />
+
+                <TextView
+                    android:id="@+id/tvGoToRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đăng ký ngay"
+                    android:textSize="13sp"
+                    android:textColor="#E5192C"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom-Right Organic Red Fluid Blob -->
+    <!-- Top Back Arrow -->
     <ImageView
-        android:layout_width="180dp"
-        android:layout_height="140dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:scaleType="fitEnd"
-        android:src="@drawable/bg_red_blob_bottom"
-        android:contentDescription="Red Bottom Blob" />
+        android:id="@+id/btnBack"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_back_white"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back Button" />
 
 </RelativeLayout>

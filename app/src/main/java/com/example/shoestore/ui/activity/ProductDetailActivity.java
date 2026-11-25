@@ -162,16 +162,28 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         int productId = getIntent().getIntExtra("PRODUCT_ID", -1);
         if (productId > 0) {
-            favoriteRepository.isFavorite(userId, productId).observe(this, count -> {
-                isFavorite = (count != null && count > 0);
+            if (SharedPrefManager.getInstance(this).isLoggedIn() && userId > 0) {
+                favoriteRepository.isFavorite(userId, productId).observe(this, count -> {
+                    isFavorite = (count != null && count > 0);
+                    if (ivFavorite != null) {
+                        ivFavorite.setImageResource(isFavorite ? R.drawable.ic_heart : R.drawable.ic_heart_outline);
+                        ivFavorite.setColorFilter(isFavorite ? 0xFFEF4444 : 0xFF0F172A);
+                    }
+                });
+            } else {
+                isFavorite = false;
                 if (ivFavorite != null) {
-                    ivFavorite.setImageResource(isFavorite ? R.drawable.ic_heart : R.drawable.ic_heart_outline);
-                    ivFavorite.setColorFilter(isFavorite ? 0xFFEF4444 : 0xFF0F172A);
+                    ivFavorite.setImageResource(R.drawable.ic_heart_outline);
+                    ivFavorite.setColorFilter(0xFF0F172A);
                 }
-            });
+            }
 
             if (btnFavorite != null) {
                 btnFavorite.setOnClickListener(v -> {
+                    if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+                        Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     favoriteRepository.toggleFavorite(userId, productId);
                     Snackbar.make(findViewById(android.R.id.content),
                             !isFavorite ? "Đã thêm vào yêu thích!" : "Đã xóa khỏi yêu thích!",
@@ -188,11 +200,21 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         if (btnAddToCart != null) {
-            btnAddToCart.setOnClickListener(v -> addToCart(null));
+            btnAddToCart.setOnClickListener(v -> {
+                if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+                    Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addToCart(null);
+            });
         }
 
         if (btnBuyNow != null) {
             btnBuyNow.setOnClickListener(v -> {
+                if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+                    Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (selectedSize == null || selectedSize.trim().isEmpty()) {
                     Toast.makeText(ProductDetailActivity.this, "Vui lòng chọn size", Toast.LENGTH_SHORT).show();
                     return;
