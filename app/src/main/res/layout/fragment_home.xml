@@ -38,13 +38,44 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnFilterSort"
                 style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 android:padding="0dp"
                 app:icon="@android:drawable/ic_menu_sort_by_size"
                 app:strokeColor="@color/divider_color"
                 app:cornerRadius="12dp"/>
+
+            <FrameLayout
+                android:id="@+id/btnNotificationHeader"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_button_outline_black"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_bell_grey" />
+
+                <TextView
+                    android:id="@+id/tvNotifBadge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/bg_pill_red"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+            </FrameLayout>
         </LinearLayout>
 
         <!-- Banner Slider ViewPager2 -->
