@@ -34,6 +34,9 @@ public class AdminMainActivity extends AppCompatActivity {
         binding = ActivityAdminMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Subscribe to FCM topic for new order notifications
+        com.google.firebase.messaging.FirebaseMessaging.getInstance().subscribeToTopic("staff_orders");
+
         orderRepository = new OrderRepository(getApplication());
         productRepository = new ProductRepository(getApplication());
 

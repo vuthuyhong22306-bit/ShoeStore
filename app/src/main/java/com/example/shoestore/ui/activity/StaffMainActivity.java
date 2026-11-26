@@ -22,6 +22,9 @@ public class StaffMainActivity extends AppCompatActivity {
         binding = ActivityStaffMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Subscribe to FCM topic for new order notifications
+        com.google.firebase.messaging.FirebaseMessaging.getInstance().subscribeToTopic("staff_orders");
+
         // Default tab: Orders
         if (savedInstanceState == null) {
             replaceFragment(new StaffOrdersFragment());
