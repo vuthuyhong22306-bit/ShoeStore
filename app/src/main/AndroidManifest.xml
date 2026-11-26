@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -51,6 +52,7 @@
         <activity android:name=".ui.activity.ManageOrdersActivity" />
         <activity android:name=".ui.activity.ManageStockActivity" />
         <activity android:name=".ui.activity.StatisticsActivity" />
+        <activity android:name=".ui.activity.NotificationActivity" />
         <activity android:name=".ui.activity.ProfileInfoActivity" />
         <activity android:name=".ui.activity.AddressListActivity" />
         <activity android:name=".ui.activity.AddEditAddressActivity" />

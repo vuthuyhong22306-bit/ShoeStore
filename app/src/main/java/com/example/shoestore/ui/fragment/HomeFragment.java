@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,8 @@ import com.example.shoestore.databinding.FragmentHomeBinding;
 import com.example.shoestore.model.Category;
 import com.example.shoestore.model.Product;
 import com.example.shoestore.repository.FavoriteRepository;
+import com.example.shoestore.repository.NotificationRepository;
+import com.example.shoestore.ui.activity.NotificationActivity;
 import com.example.shoestore.ui.activity.ProductDetailActivity;
 import com.example.shoestore.ui.adapter.BannerAdapter;
 import com.example.shoestore.ui.adapter.ProductAdapter;
@@ -71,6 +74,31 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
 
         binding.rvProducts.setAdapter(adapter);
         binding.viewPagerBanner.setAdapter(new BannerAdapter());
+
+        View btnNotif = view.findViewById(R.id.btnNotificationHeader);
+        TextView tvNotifBadge = view.findViewById(R.id.tvNotifBadge);
+
+        if (btnNotif != null) {
+            btnNotif.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), NotificationActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        NotificationRepository notificationRepository = new NotificationRepository(requireActivity().getApplication());
+        String currentUserIdStr = String.valueOf(userId);
+        String currentRoleStr = SharedPrefManager.getInstance(requireContext()).getUserRole();
+
+        notificationRepository.getUnreadCountForUser(currentUserIdStr, currentRoleStr).observe(getViewLifecycleOwner(), unreadCount -> {
+            if (tvNotifBadge != null) {
+                if (unreadCount != null && unreadCount > 0) {
+                    tvNotifBadge.setText(String.valueOf(unreadCount));
+                    tvNotifBadge.setVisibility(View.VISIBLE);
+                } else {
+                    tvNotifBadge.setVisibility(View.GONE);
+                }
+            }
+        });
 
         viewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories == null) return;

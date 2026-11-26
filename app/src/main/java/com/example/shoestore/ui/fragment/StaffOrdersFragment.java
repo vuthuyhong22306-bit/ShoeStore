@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,9 @@ import androidx.fragment.app.Fragment;
 import com.example.shoestore.R;
 import com.example.shoestore.databinding.FragmentStaffOrdersBinding;
 import com.example.shoestore.model.Order;
+import com.example.shoestore.repository.NotificationRepository;
 import com.example.shoestore.repository.OrderRepository;
+import com.example.shoestore.ui.activity.NotificationActivity;
 import com.example.shoestore.ui.activity.OrderDetailActivity;
 import com.example.shoestore.ui.activity.CustomerMainActivity;
 import com.example.shoestore.ui.adapter.StaffOrderAdapter;
@@ -58,6 +61,32 @@ public class StaffOrdersFragment extends Fragment implements StaffOrderAdapter.O
 
         // Header Logout Action
         binding.btnLogoutHeader.setOnClickListener(v -> performLogout());
+
+        // Notification Bell Action & Unread Badge
+        View btnStaffNotif = view.findViewById(R.id.btnStaffNotification);
+        TextView tvStaffNotifBadge = view.findViewById(R.id.tvStaffNotifBadge);
+
+        if (btnStaffNotif != null) {
+            btnStaffNotif.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), NotificationActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        NotificationRepository notifRepo = new NotificationRepository(getActivity().getApplication());
+        String currentUserIdStr = String.valueOf(SharedPrefManager.getInstance(getContext()).getUserId());
+        String currentRoleStr = SharedPrefManager.getInstance(getContext()).getUserRole();
+
+        notifRepo.getUnreadCountForUser(currentUserIdStr, currentRoleStr).observe(getViewLifecycleOwner(), unreadCount -> {
+            if (tvStaffNotifBadge != null) {
+                if (unreadCount != null && unreadCount > 0) {
+                    tvStaffNotifBadge.setText(String.valueOf(unreadCount));
+                    tvStaffNotifBadge.setVisibility(View.VISIBLE);
+                } else {
+                    tvStaffNotifBadge.setVisibility(View.GONE);
+                }
+            }
+        });
 
         // Observe All Orders from Database
         orderRepository.getAllOrders().observe(getViewLifecycleOwner(), orders -> {
