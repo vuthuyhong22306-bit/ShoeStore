@@ -12,6 +12,7 @@ public class SharedPrefManager {
     private static final String KEY_USER_EMAIL = "key_user_email";
     private static final String KEY_USER_PHONE = "key_user_phone";
     private static final String KEY_USER_ROLE = "key_user_role";
+    private static final String KEY_REMEMBER_ME = "key_remember_me";
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
@@ -28,6 +29,10 @@ public class SharedPrefManager {
     }
 
     public void userLogin(User user) {
+        userLogin(user, true);
+    }
+
+    public void userLogin(User user, boolean rememberMe) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(KEY_USER_ID, user.getId());
@@ -35,7 +40,13 @@ public class SharedPrefManager {
         editor.putString(KEY_USER_EMAIL, user.getEmail());
         editor.putString(KEY_USER_PHONE, user.getPhoneNumber());
         editor.putString(KEY_USER_ROLE, user.getRole());
+        editor.putBoolean(KEY_REMEMBER_ME, rememberMe);
         editor.apply();
+    }
+
+    public boolean isRemembered() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_REMEMBER_ME, false);
     }
 
     public boolean isLoggedIn() {

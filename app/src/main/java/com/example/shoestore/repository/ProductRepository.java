@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class ProductRepository {
+    public static final int LOW_STOCK_THRESHOLD = 5;
+
     private final ProductDao productDao;
     private final CategoryDao categoryDao;
     private final ExecutorService executor;
@@ -21,6 +23,46 @@ public class ProductRepository {
         categoryDao = db.categoryDao();
         executor = AppDatabase.databaseWriteExecutor;
         ensureProductsPopulatedAndSynced();
+        initFirebaseProductsListener();
+    }
+
+    private void initFirebaseProductsListener() {
+        try {
+            com.google.firebase.database.FirebaseDatabase.getInstance()
+                    .getReference("products")
+                    .addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+                        @Override
+                        public void onDataChange(com.google.firebase.database.DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                executor.execute(() -> {
+                                    for (com.google.firebase.database.DataSnapshot child : snapshot.getChildren()) {
+                                        try {
+                                            Product product = child.getValue(Product.class);
+                                            if (product != null) {
+                                                if (product.getId() <= 0 && child.getKey() != null) {
+                                                    try {
+                                                        product.setId(Integer.parseInt(child.getKey()));
+                                                    } catch (Exception ignored) {}
+                                                }
+                                                if (product.getImage() == null || product.getImage().isEmpty()) {
+                                                    product.setImage(getRealSneakerImageUrl(product.getName()));
+                                                }
+                                                productDao.insert(product);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(com.google.firebase.database.DatabaseError error) {}
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void ensureProductsPopulatedAndSynced() {

@@ -12,17 +12,17 @@ import androidx.annotation.Nullable;
 
 import com.example.shoestore.model.RevenueByDate;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class BarChartView extends View {
     private List<RevenueByDate> dataList = new ArrayList<>();
-    private Paint barPaint;
+    private Paint highlightBarPaint;
+    private Paint normalBarPaint;
     private Paint textPaint;
-    private Paint axisPaint;
     private RectF barRect = new RectF();
+
+    private static final String[] WEEKDAY_LABELS = {"T2", "T3", "T4", "T5", "T6", "T7", "CN"};
 
     public BarChartView(Context context) {
         super(context);
@@ -40,16 +40,15 @@ public class BarChartView extends View {
     }
 
     private void init() {
-        barPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        barPaint.setColor(Color.parseColor("#FF6D00"));
+        highlightBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        highlightBarPaint.setColor(Color.parseColor("#D0343C"));
+
+        normalBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        normalBarPaint.setColor(Color.parseColor("#F0B8BC"));
 
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(Color.DKGRAY);
-        textPaint.setTextSize(30f);
-
-        axisPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        axisPaint.setColor(Color.LTGRAY);
-        axisPaint.setStrokeWidth(3f);
+        textPaint.setColor(Color.parseColor("#6B6B6B"));
+        textPaint.setTextSize(32f);
     }
 
     public void setData(List<RevenueByDate> dataList) {
@@ -60,67 +59,88 @@ public class BarChartView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (dataList == null || dataList.isEmpty()) {
-            textPaint.setTextAlign(Paint.Align.CENTER);
-            canvas.drawText("Chưa có dữ liệu doanh thu", getWidth() / 2f, getHeight() / 2f, textPaint);
-            return;
-        }
-
         int width = getWidth();
         int height = getHeight();
 
+        if (dataList == null || dataList.isEmpty()) {
+            // Draw 7 empty/default placeholder bars (T2..CN) matching screenshot layout
+            drawPlaceholderBars(canvas, width, height);
+            return;
+        }
+
         float paddingLeft = 40f;
         float paddingRight = 40f;
-        float paddingTop = 60f;
-        float paddingBottom = 70f;
+        float paddingTop = 30f;
+        float paddingBottom = 60f;
 
         float chartWidth = width - paddingLeft - paddingRight;
         float chartHeight = height - paddingTop - paddingBottom;
 
         double maxVal = 0;
-        for (RevenueByDate item : dataList) {
-            if (item.getRevenue() > maxVal) {
-                maxVal = item.getRevenue();
+        int maxIndex = 0;
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i).getRevenue() > maxVal) {
+                maxVal = dataList.get(i).getRevenue();
+                maxIndex = i;
             }
         }
         if (maxVal == 0) maxVal = 1;
 
-        int size = Math.min(dataList.size(), 7);
-        float barWidth = (chartWidth / size) * 0.5f;
-        float space = (chartWidth / size);
+        int count = Math.min(dataList.size(), 7);
+        float barWidth = (chartWidth / count) * 0.55f;
+        float space = (chartWidth / count);
 
-        canvas.drawLine(paddingLeft, height - paddingBottom, width - paddingRight, height - paddingBottom, axisPaint);
-
-        NumberFormat shortFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        shortFormat.setMaximumFractionDigits(0);
-
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < count; i++) {
             RevenueByDate item = dataList.get(i);
             float left = paddingLeft + (i * space) + (space - barWidth) / 2f;
             float right = left + barWidth;
 
-            float barHeightRatio = (float) (item.getRevenue() / maxVal);
-            float top = height - paddingBottom - (barHeightRatio * chartHeight);
+            float ratio = (float) (item.getRevenue() / maxVal);
+            if (ratio < 0.15f && item.getRevenue() > 0) ratio = 0.15f;
 
-            if (top > height - paddingBottom - 10f) {
-                top = height - paddingBottom - 10f;
+            float top = height - paddingBottom - (ratio * chartHeight);
+            if (top > height - paddingBottom - 15f) {
+                top = height - paddingBottom - 15f;
             }
 
             barRect.set(left, top, right, height - paddingBottom);
-            canvas.drawRoundRect(barRect, 12f, 12f, barPaint);
+            Paint p = (i == maxIndex && item.getRevenue() > 0) ? highlightBarPaint : normalBarPaint;
+            canvas.drawRoundRect(barRect, 10f, 10f, p);
 
             textPaint.setTextAlign(Paint.Align.CENTER);
-            textPaint.setTextSize(26f);
-            textPaint.setColor(Color.DKGRAY);
-            String dateLabel = item.getDate();
-            if (dateLabel != null && dateLabel.length() > 5 && dateLabel.contains("-")) {
-                dateLabel = dateLabel.substring(5);
-            }
-            canvas.drawText(dateLabel != null ? dateLabel : "", left + barWidth / 2f, height - paddingBottom + 40f, textPaint);
+            textPaint.setTextSize(30f);
+            String label = (i < WEEKDAY_LABELS.length) ? WEEKDAY_LABELS[i] : item.getDate();
+            canvas.drawText(label != null ? label : "", left + barWidth / 2f, height - paddingBottom + 45f, textPaint);
+        }
+    }
 
-            textPaint.setTextSize(22f);
-            String revLabel = String.format(Locale.getDefault(), "%.1fM", item.getRevenue() / 1_000_000.0);
-            canvas.drawText(revLabel, left + barWidth / 2f, Math.max(paddingTop - 10f, top - 15f), textPaint);
+    private void drawPlaceholderBars(Canvas canvas, int width, int height) {
+        float paddingLeft = 40f;
+        float paddingRight = 40f;
+        float paddingTop = 30f;
+        float paddingBottom = 60f;
+
+        float chartWidth = width - paddingLeft - paddingRight;
+        float chartHeight = height - paddingTop - paddingBottom;
+
+        float[] sampleHeights = {0.4f, 0.6f, 0.35f, 0.7f, 0.5f, 0.95f, 0.55f}; // T7 is highest (matching photo)
+
+        float barWidth = (chartWidth / 7) * 0.55f;
+        float space = (chartWidth / 7);
+
+        for (int i = 0; i < 7; i++) {
+            float left = paddingLeft + (i * space) + (space - barWidth) / 2f;
+            float right = left + barWidth;
+
+            float top = height - paddingBottom - (sampleHeights[i] * chartHeight);
+
+            barRect.set(left, top, right, height - paddingBottom);
+            Paint p = (i == 5) ? highlightBarPaint : normalBarPaint; // T7 highlighted
+            canvas.drawRoundRect(barRect, 10f, 10f, p);
+
+            textPaint.setTextAlign(Paint.Align.CENTER);
+            textPaint.setTextSize(30f);
+            canvas.drawText(WEEKDAY_LABELS[i], left + barWidth / 2f, height - paddingBottom + 45f, textPaint);
         }
     }
 }

@@ -251,6 +251,10 @@ public class OrderRepository {
         return orderDetailDao.getOrderDetails(orderId);
     }
 
+    public LiveData<List<OrderDetail>> getAllOrderDetails() {
+        return orderDetailDao.getAllOrderDetails();
+    }
+
     public void updateOrderStatus(Order order) {
         executor.execute(() -> {
             orderDao.update(order);
@@ -309,7 +313,9 @@ public class OrderRepository {
         executor.execute(() -> {
             order.setStatus("Đã chấp nhận");
             updateOrderStatus(order);
-            if (onComplete != null) onComplete.run();
+            if (onComplete != null) {
+                onComplete.run();
+            }
         });
     }
 
@@ -320,7 +326,9 @@ public class OrderRepository {
                 order.setNote("Từ chối: " + reason.trim());
             }
             updateOrderStatus(order);
-            if (onComplete != null) onComplete.run();
+            if (onComplete != null) {
+                onComplete.run();
+            }
         });
     }
 
@@ -335,7 +343,9 @@ public class OrderRepository {
             }
             order.setStatus("Đã nhận hàng trả");
             updateOrderStatus(order);
-            if (onComplete != null) onComplete.run();
+            if (onComplete != null) {
+                onComplete.run();
+            }
         });
     }
 
@@ -343,7 +353,9 @@ public class OrderRepository {
         executor.execute(() -> {
             order.setStatus("Đã hoàn trả");
             updateOrderStatus(order);
-            if (onComplete != null) onComplete.run();
+            if (onComplete != null) {
+                onComplete.run();
+            }
         });
     }
 

@@ -18,6 +18,35 @@ public class UserRepository {
         userDao = db.userDao();
         addressDao = db.addressDao();
         executor = AppDatabase.databaseWriteExecutor;
+        ensureStaffAccountSyncedToFirebase();
+    }
+
+    private void ensureStaffAccountSyncedToFirebase() {
+        com.google.firebase.database.DatabaseReference usersRef = com.google.firebase.database.FirebaseDatabase.getInstance().getReference("users");
+        usersRef.child("2").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(com.google.firebase.database.DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    java.util.Map<String, Object> staffMap = new java.util.HashMap<>();
+                    staffMap.put("id", 2);
+                    staffMap.put("fullName", "Nguyễn Văn Staff");
+                    staffMap.put("email", "staff@shoestore.com");
+                    staffMap.put("username", "Nhanvien1");
+                    staffMap.put("phoneNumber", "0987654321");
+                    staffMap.put("password", "123123");
+                    staffMap.put("address", "TP. HCM");
+                    staffMap.put("role", "STAFF");
+                    staffMap.put("locked", false);
+
+                    usersRef.child("2").setValue(staffMap);
+                    try {
+                        com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document("2").set(staffMap);
+                    } catch (Exception ignored) {}
+                }
+            }
+            @Override
+            public void onCancelled(com.google.firebase.database.DatabaseError error) {}
+        });
     }
 
     public void insert(User user, OnUserActionCallback callback) {

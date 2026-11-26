@@ -3,92 +3,118 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="6dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="2dp"
-    app:strokeColor="#E0E0E0"
-    app:strokeWidth="1dp">
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#EEEEEE"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="#FFFFFF">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="14dp">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
-            android:id="@+id/layoutAccountInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/btnToggleLock"
-            android:layout_centerVertical="true">
+        <!-- Line 1: Avatar, Name/Email & Status Badge -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <!-- Avatar Circle with Initial Letter -->
+            <TextView
+                android:id="@+id/tvAvatarLetter"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_red_circle"
+                android:gravity="center"
+                android:text="T"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+
+            <!-- Account Name & Email -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:layout_toEndOf="@id/tvAvatarLetter"
+                android:layout_toStartOf="@id/tvAccountStatusBadge"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="14dp">
 
                 <TextView
                     android:id="@+id/tvAccountName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nguyễn Văn A"
+                    android:text="Trần Văn D"
+                    android:textColor="#1C1C1E"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#111111" />
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvAccountRole"
+                    android:id="@+id/tvAccountSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CUSTOMER"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    android:background="@drawable/bg_pill_red"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="3dp"
-                    android:layout_marginStart="10dp" />
+                    android:text="[email nhân viên]"
+                    android:textColor="#6B6B6B"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp" />
 
             </LinearLayout>
 
+            <!-- Status Badge -->
             <TextView
-                android:id="@+id/tvAccountEmail"
+                android:id="@+id/tvAccountStatusBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email: customer@gmail.com"
-                android:textSize="13sp"
-                android:textColor="#666666"
-                android:layout_marginTop="4dp" />
+                android:text="Hoạt động"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#1E7B3C"
+                android:background="@drawable/bg_badge_green"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@id/tvAvatarLetter" />
 
-            <TextView
-                android:id="@+id/tvAccountPhone"
+        </RelativeLayout>
+
+        <!-- Line 2: Action Buttons (Sửa & Khóa / Mở khóa) -->
+        <LinearLayout
+            android:id="@+id/layoutAccountActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEditAccount"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SĐT: 0912345678"
-                android:textSize="13sp"
-                android:textColor="#666666"
-                android:layout_marginTop="2dp" />
+                android:layout_height="38dp"
+                android:text="Sửa"
+                android:textColor="#1C1C1E"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_admin_outlined"
+                android:paddingHorizontal="18dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnToggleLock"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginStart="10dp"
+                android:text="Khóa"
+                android:textColor="#1C1C1E"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_admin_outlined"
+                android:paddingHorizontal="18dp" />
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnToggleLock"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="Khóa"
-            android:textSize="12sp"
-            android:textColor="#D32F2F"
-            app:strokeColor="#D32F2F"
-            app:cornerRadius="8dp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="0dp" />
-
-    </RelativeLayout>
-
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

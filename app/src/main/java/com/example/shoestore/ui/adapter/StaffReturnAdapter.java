@@ -93,7 +93,7 @@ public class StaffReturnAdapter extends RecyclerView.Adapter<StaffReturnAdapter.
 
             // Tab-specific UI visibility & styling
             if ("PENDING".equals(currentTab)) {
-                binding.tvStatusTag.setText("Chờ duyệt");
+                binding.tvStatusTag.setText(R.string.tab_pending);
                 binding.tvStatusTag.setBackgroundResource(R.drawable.bg_badge_pending_orange);
                 binding.tvStatusTag.setTextColor(ContextCompat.getColor(binding.getRoot().getContext(), android.R.color.holo_red_dark));
 
@@ -122,7 +122,7 @@ public class StaffReturnAdapter extends RecyclerView.Adapter<StaffReturnAdapter.
                 });
 
             } else if ("ACCEPTED".equals(currentTab)) {
-                binding.tvStatusTag.setText("Đã chấp nhận");
+                binding.tvStatusTag.setText(R.string.tab_accepted);
                 binding.tvStatusTag.setBackgroundResource(R.drawable.bg_badge_accepted_grey);
                 binding.tvStatusTag.setTextColor(ContextCompat.getColor(binding.getRoot().getContext(), android.R.color.darker_gray));
 
@@ -135,7 +135,7 @@ public class StaffReturnAdapter extends RecyclerView.Adapter<StaffReturnAdapter.
                 });
 
             } else if ("RECEIVED".equals(currentTab)) {
-                binding.tvStatusTag.setText("Đã nhận hàng trả");
+                binding.tvStatusTag.setText(R.string.tab_received);
                 binding.tvStatusTag.setBackgroundResource(R.drawable.bg_badge_received_green);
                 binding.tvStatusTag.setTextColor(ContextCompat.getColor(binding.getRoot().getContext(), android.R.color.holo_green_dark));
 

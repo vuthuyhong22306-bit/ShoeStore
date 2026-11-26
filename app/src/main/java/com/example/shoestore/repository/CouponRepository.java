@@ -31,6 +31,29 @@ public class CouponRepository {
                 });
     }
 
+    public void deleteCoupon(String code, OnCouponActionCallback callback) {
+        if (code == null) return;
+        couponsRef.child(code).removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    if (callback != null) callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onError("Lỗi xóa mã giảm giá: " + e.getMessage());
+                });
+    }
+
+    public void toggleCouponStatus(String code, boolean isAvailable, OnCouponActionCallback callback) {
+        if (code == null) return;
+        couponsRef.child(code).child("available").setValue(isAvailable)
+                .addOnSuccessListener(aVoid -> {
+                    couponsRef.child(code).child("isAvailable").setValue(isAvailable);
+                    if (callback != null) callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onError("Lỗi cập nhật trạng thái mã: " + e.getMessage());
+                });
+    }
+
     public void listenCoupons(OnCouponsLoadedListener listener) {
         couponsRef.addValueEventListener(new ValueEventListener() {
             @Override

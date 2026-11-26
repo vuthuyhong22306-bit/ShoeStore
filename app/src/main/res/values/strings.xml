@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">ShoeStore</string>
+    <string name="msg_please_login">Vui lòng đăng nhập</string>
+    <string name="msg_confirm_logout_title">Đăng xuất</string>
+    <string name="msg_confirm_logout_admin">Admin có muốn đăng xuất?</string>
+    <string name="msg_confirm_logout_staff">Nhân viên có muốn đăng xuất?</string>
+    <string name="btn_logout">Đăng xuất</string>
+    <string name="btn_cancel">Hủy</string>
     <string-array name="sort_options">
         <item>Mặc định</item>
         <item>Giá thấp đến cao</item>

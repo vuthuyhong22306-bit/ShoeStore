@@ -15,8 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.shoestore.R;
+import com.example.shoestore.ui.activity.LoginActivity;
 import com.example.shoestore.ui.activity.OrderDetailActivity;
-import com.example.shoestore.ui.activity.RoleSelectionActivity;
 import com.example.shoestore.utils.SharedPrefManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -125,8 +125,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent = new Intent(context, OrderDetailActivity.class);
             intent.putExtra("ORDER_ID", orderId);
         } else {
-            // Chưa đăng nhập -> Chuyển sang màn hình Đăng nhập / Chọn vai trò và truyền order_id
-            intent = new Intent(context, RoleSelectionActivity.class);
+            // Chưa đăng nhập -> Chuyển sang màn hình Đăng nhập duy nhất
+            intent = new Intent(context, LoginActivity.class);
             intent.putExtra("ORDER_ID", orderId);
             intent.putExtra("PENDING_NOTIF_ORDER_ID", orderId);
         }
