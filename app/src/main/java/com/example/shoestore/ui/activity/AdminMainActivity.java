@@ -14,6 +14,7 @@ import com.example.shoestore.model.Order;
 import com.example.shoestore.model.OrderDetail;
 import com.example.shoestore.model.Product;
 import com.example.shoestore.model.RevenueByDate;
+import com.example.shoestore.repository.NotificationRepository;
 import com.example.shoestore.repository.OrderRepository;
 import com.example.shoestore.repository.ProductRepository;
 import com.example.shoestore.utils.SharedPrefManager;
@@ -68,6 +69,27 @@ public class AdminMainActivity extends AppCompatActivity {
                     })
                     .setNegativeButton(R.string.btn_cancel, null)
                     .show();
+        });
+
+        // Notification Center & Unread Count Badge
+        binding.btnAdminNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminMainActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        });
+
+        NotificationRepository notificationRepository = new NotificationRepository(getApplication());
+        String currentUserIdStr = String.valueOf(SharedPrefManager.getInstance(this).getUserId());
+        String currentRoleStr = SharedPrefManager.getInstance(this).getUserRole();
+
+        notificationRepository.getUnreadCountForUser(currentUserIdStr, currentRoleStr).observe(this, unreadCount -> {
+            if (binding != null && binding.tvAdminNotifBadge != null) {
+                if (unreadCount != null && unreadCount > 0) {
+                    binding.tvAdminNotifBadge.setText(String.valueOf(unreadCount));
+                    binding.tvAdminNotifBadge.setVisibility(View.VISIBLE);
+                } else {
+                    binding.tvAdminNotifBadge.setVisibility(View.GONE);
+                }
+            }
         });
 
         // Total Orders Count

@@ -120,8 +120,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         if (btnHeaderCart != null) {
             btnHeaderCart.setOnClickListener(v -> {
                 Intent intent = new Intent(ProductDetailActivity.this, CustomerMainActivity.class);
+                intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_cart);
                 intent.putExtra("NAVIGATE_TO", "CART");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
+                finish();
             });
         }
 

@@ -40,6 +40,7 @@ public class OrderRepository {
     private final OrderDetailDao orderDetailDao;
     private final CartItemDao cartItemDao;
     private final ProductDao productDao;
+    private final NotificationRepository notificationRepository;
     private final ExecutorService executor;
 
     public OrderRepository(Application application) {
@@ -48,6 +49,7 @@ public class OrderRepository {
         orderDetailDao = db.orderDetailDao();
         cartItemDao = db.cartItemDao();
         productDao = db.productDao();
+        notificationRepository = new NotificationRepository(application);
         executor = AppDatabase.databaseWriteExecutor;
 
         initFirebaseRealtimeSync();
@@ -221,6 +223,11 @@ public class OrderRepository {
             } catch (Exception e) {
                 Log.e(TAG, "Error writing order to Firestore: " + e.getMessage());
             }
+
+            // Realtime Notification dispatch
+            if (notificationRepository != null) {
+                notificationRepository.sendOrderPlacedNotifications(order);
+            }
         });
     }
 
@@ -283,6 +290,11 @@ public class OrderRepository {
                         .update(updates);
             } catch (Exception e) {
                 Log.e(TAG, "Error updating status in Firestore: " + e.getMessage());
+            }
+
+            // Realtime Notification dispatch for status update
+            if (notificationRepository != null) {
+                notificationRepository.sendOrderStatusNotification(order);
             }
         });
     }
