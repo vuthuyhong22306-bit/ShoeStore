@@ -5,17 +5,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.shoestore.R;
 import com.example.shoestore.databinding.FragmentCartBinding;
 import com.example.shoestore.model.CartItem;
 import com.example.shoestore.model.Product;
 import com.example.shoestore.ui.activity.CheckoutActivity;
+import com.example.shoestore.ui.activity.LoginActivity;
 import com.example.shoestore.ui.adapter.CartAdapter;
+import com.example.shoestore.utils.GuestDataManager;
+import com.example.shoestore.utils.SharedPrefManager;
 import com.example.shoestore.viewmodel.CartViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -44,6 +49,15 @@ public class CartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        boolean isLoggedIn = SharedPrefManager.getInstance(requireContext()).isLoggedIn();
+        if (!isLoggedIn) {
+            GuestDataManager.getInstance(requireContext()).savePendingAction("MAIN", "NAV_CART", -1, "", "", 1, 0);
+            Toast.makeText(requireContext(), R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            startActivity(intent);
+            return;
+        }
+
         viewModel = new ViewModelProvider(this).get(CartViewModel.class);
         adapter = new CartAdapter(viewModel);
         binding.rvCart.setAdapter(adapter);
@@ -69,6 +83,7 @@ public class CartFragment extends Fragment {
                 Snackbar.make(view, "Giỏ hàng của bạn đang trống!", Snackbar.LENGTH_SHORT).show();
                 return;
             }
+
             Intent intent = new Intent(getContext(), CheckoutActivity.class);
             intent.putExtra(CheckoutActivity.EXTRA_MODE, CheckoutActivity.MODE_CART);
             intent.putExtra("TOTAL_PRICE", totalPrice);

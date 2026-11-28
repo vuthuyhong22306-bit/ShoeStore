@@ -18,6 +18,7 @@ import com.example.shoestore.model.Product;
 import com.example.shoestore.repository.CartRepository;
 import com.example.shoestore.repository.FavoriteRepository;
 import com.example.shoestore.repository.ProductRepository;
+import com.example.shoestore.utils.GuestDataManager;
 import com.example.shoestore.utils.SharedPrefManager;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -119,6 +120,13 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         if (btnHeaderCart != null) {
             btnHeaderCart.setOnClickListener(v -> {
+                if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+                    GuestDataManager.getInstance(this).savePendingAction("MAIN", "NAV_CART", -1, "", "", 1, 0);
+                    Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    return;
+                }
                 Intent intent = new Intent(ProductDetailActivity.this, CustomerMainActivity.class);
                 intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_cart);
                 intent.putExtra("NAVIGATE_TO", "CART");
@@ -128,7 +136,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             });
         }
 
-        if (tvCartBadge != null) {
+        if (tvCartBadge != null && SharedPrefManager.getInstance(this).isLoggedIn()) {
             cartRepository.getCartItems(userId).observe(this, cartItems -> {
                 if (cartItems != null && !cartItems.isEmpty()) {
                     int totalCount = 0;
@@ -141,6 +149,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                     tvCartBadge.setVisibility(View.GONE);
                 }
             });
+        } else if (tvCartBadge != null) {
+            tvCartBadge.setVisibility(View.GONE);
         }
 
         if (btnMinus != null) {
@@ -165,7 +175,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         int productId = getIntent().getIntExtra("PRODUCT_ID", -1);
         if (productId > 0) {
-            if (SharedPrefManager.getInstance(this).isLoggedIn() && userId > 0) {
+            if (SharedPrefManager.getInstance(this).isLoggedIn()) {
                 favoriteRepository.isFavorite(userId, productId).observe(this, count -> {
                     isFavorite = (count != null && count > 0);
                     if (ivFavorite != null) {
@@ -184,7 +194,10 @@ public class ProductDetailActivity extends AppCompatActivity {
             if (btnFavorite != null) {
                 btnFavorite.setOnClickListener(v -> {
                     if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+                        GuestDataManager.getInstance(this).savePendingAction("PRODUCT_DETAIL", "TOGGLE_FAVORITE", productId, "", "", 1, 0);
                         Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
+                        startActivity(intent);
                         return;
                     }
                     favoriteRepository.toggleFavorite(userId, productId);
@@ -205,7 +218,12 @@ public class ProductDetailActivity extends AppCompatActivity {
         if (btnAddToCart != null) {
             btnAddToCart.setOnClickListener(v -> {
                 if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+                    if (currentProduct != null) {
+                        GuestDataManager.getInstance(this).savePendingAction("PRODUCT_DETAIL", "ADD_TO_CART", currentProduct.getId(), selectedSize, selectedColor, quantity, currentProduct.getPrice());
+                    }
                     Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
+                    startActivity(intent);
                     return;
                 }
                 addToCart(null);
@@ -214,10 +232,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         if (btnBuyNow != null) {
             btnBuyNow.setOnClickListener(v -> {
-                if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
-                    Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 if (selectedSize == null || selectedSize.trim().isEmpty()) {
                     Toast.makeText(ProductDetailActivity.this, "Vui lòng chọn size", Toast.LENGTH_SHORT).show();
                     return;
@@ -228,6 +242,14 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
                 if (currentProduct == null || currentProduct.getStock() <= 0) {
                     Toast.makeText(ProductDetailActivity.this, "Sản phẩm đã hết hàng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+                    GuestDataManager.getInstance(this).savePendingAction("CHECKOUT", "BUY_NOW", currentProduct.getId(), selectedSize, selectedColor, quantity, currentProduct.getPrice());
+                    Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
+                    startActivity(intent);
                     return;
                 }
 

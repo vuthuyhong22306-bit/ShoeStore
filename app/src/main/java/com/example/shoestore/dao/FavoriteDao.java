@@ -22,6 +22,9 @@ public interface FavoriteDao {
     @Query("SELECT productId FROM favorites WHERE userId = :userId")
     LiveData<List<Integer>> getFavoriteProductIds(int userId);
 
+    @Query("SELECT productId FROM favorites WHERE userId = :userId")
+    List<Integer> getFavoriteProductIdsSync(int userId);
+
     @Query("SELECT products.* FROM products INNER JOIN favorites ON products.id = favorites.productId WHERE favorites.userId = :userId")
     LiveData<List<Product>> getFavoriteProducts(int userId);
 

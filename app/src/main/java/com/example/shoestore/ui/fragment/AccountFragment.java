@@ -164,9 +164,24 @@ public class AccountFragment extends Fragment {
         );
 
         binding.btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
+            int userId = SharedPrefManager.getInstance(requireContext()).getUserId();
+
+            try {
+                FirebaseAuth.getInstance().signOut();
+            } catch (Exception ignored) {}
+
             SharedPrefManager.getInstance(requireContext()).logout();
-            Intent intent = new Intent(requireContext(), LoginActivity.class);
+            com.example.shoestore.utils.GuestDataManager.getInstance(requireContext()).clearAllGuestData();
+
+            com.example.shoestore.database.AppDatabase.databaseWriteExecutor.execute(() -> {
+                com.example.shoestore.database.AppDatabase db = com.example.shoestore.database.AppDatabase.getDatabase(requireContext().getApplicationContext());
+                if (userId > 0) {
+                    db.cartItemDao().clearCart(userId);
+                }
+            });
+
+            Toast.makeText(requireContext(), "Đã đăng xuất!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(requireContext(), com.example.shoestore.ui.activity.CustomerMainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });

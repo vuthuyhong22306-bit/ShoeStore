@@ -14,8 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
+import com.example.shoestore.model.CartItem;
 import com.example.shoestore.model.User;
+import com.example.shoestore.repository.CartRepository;
+import com.example.shoestore.repository.FavoriteRepository;
 import com.example.shoestore.repository.UserRepository;
+import com.example.shoestore.utils.GuestDataManager;
+import com.example.shoestore.utils.SharedPrefManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -187,10 +192,9 @@ public class CustomerRegisterActivity extends AppCompatActivity {
                                     newUser.setId((int) newId);
                                     userRepository.insert(newUser, null);
 
-                                    Toast.makeText(CustomerRegisterActivity.this, "Đăng ký tài khoản thành công!", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(CustomerRegisterActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                    SharedPrefManager.getInstance(CustomerRegisterActivity.this).userLogin(newUser);
+
+                                    processCustomerPendingAction(newUser);
                                 }).addOnFailureListener(e -> {
                                     Toast.makeText(CustomerRegisterActivity.this, "Đăng ký thất bại: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 });
@@ -215,5 +219,62 @@ public class CustomerRegisterActivity extends AppCompatActivity {
                 Toast.makeText(CustomerRegisterActivity.this, "Lỗi kết nối Firebase: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void processCustomerPendingAction(User user) {
+        Toast.makeText(this, "Đăng ký tài khoản thành công!", Toast.LENGTH_LONG).show();
+
+        GuestDataManager guestPref = GuestDataManager.getInstance(this);
+        String action = guestPref.getPendingAction();
+        String returnDest = guestPref.getReturnDestination();
+        int productId = guestPref.getPendingProductId();
+        String size = guestPref.getPendingSize();
+        String color = guestPref.getPendingColor();
+        int quantity = guestPref.getPendingQuantity();
+        double price = guestPref.getPendingPrice();
+
+        guestPref.clearPendingAction();
+
+        Intent intent;
+        if ("ADD_TO_CART".equalsIgnoreCase(action) && productId > 0) {
+            CartRepository cartRepository = new CartRepository(getApplication());
+            CartItem newItem = new CartItem(user.getId(), productId, size, color, quantity);
+            cartRepository.addToCart(newItem, 9999, null);
+
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_cart);
+        } else if ("BUY_NOW".equalsIgnoreCase(action) && productId > 0) {
+            intent = new Intent(this, CheckoutActivity.class);
+            intent.putExtra(CheckoutActivity.EXTRA_MODE, CheckoutActivity.MODE_BUY_NOW);
+            intent.putExtra(CheckoutActivity.EXTRA_PRODUCT_ID, productId);
+            intent.putExtra(CheckoutActivity.EXTRA_SIZE, size);
+            intent.putExtra(CheckoutActivity.EXTRA_COLOR, color);
+            intent.putExtra(CheckoutActivity.EXTRA_QUANTITY, quantity);
+            intent.putExtra(CheckoutActivity.EXTRA_PRICE, price);
+        } else if ("TOGGLE_FAVORITE".equalsIgnoreCase(action) && productId > 0) {
+            FavoriteRepository favoriteRepository = new FavoriteRepository(getApplication());
+            favoriteRepository.toggleFavorite(user.getId(), productId);
+
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_favorites);
+        } else if ("NAV_CART".equalsIgnoreCase(action)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_cart);
+        } else if ("NAV_FAVORITES".equalsIgnoreCase(action)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_favorites);
+        } else if ("NAV_ORDERS".equalsIgnoreCase(action) || "ORDERS".equalsIgnoreCase(returnDest)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_orders);
+        } else if ("NAV_ACCOUNT".equalsIgnoreCase(action) || "ACCOUNT".equalsIgnoreCase(returnDest)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, R.id.nav_account);
+        } else {
+            intent = new Intent(this, CustomerMainActivity.class);
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
