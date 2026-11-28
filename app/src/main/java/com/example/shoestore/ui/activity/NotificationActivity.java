@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -35,14 +36,26 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     private View layoutEmpty;
     private ImageView btnBack;
     private TextView btnMarkAllRead;
+    private TextView btnDeleteAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+            Toast.makeText(this, "Vui lòng đăng nhập để xem thông báo", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra(LoginActivity.EXTRA_TARGET_ACTION, "NOTIFICATIONS");
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_notification);
 
         btnBack = findViewById(R.id.btnBack);
         btnMarkAllRead = findViewById(R.id.btnMarkAllRead);
+        btnDeleteAll = findViewById(R.id.btnDeleteAll);
         rvNotifications = findViewById(R.id.rvNotifications);
         layoutEmpty = findViewById(R.id.layoutEmpty);
 
@@ -64,6 +77,20 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
             btnMarkAllRead.setOnClickListener(v -> {
                 notificationRepository.markAllAsRead(currentUserId, currentRole);
                 Toast.makeText(this, "Đã đánh dấu đọc tất cả thông báo", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        if (btnDeleteAll != null) {
+            btnDeleteAll.setOnClickListener(v -> {
+                new AlertDialog.Builder(this)
+                        .setTitle("Xóa tất cả thông báo")
+                        .setMessage("Bạn có chắc chắn muốn xóa tất cả thông báo không?")
+                        .setPositiveButton("Xóa tất cả", (dialog, which) -> {
+                            notificationRepository.deleteAllForUser(currentUserId, currentRole);
+                            Toast.makeText(this, "Đã xóa tất cả thông báo", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
             });
         }
 
