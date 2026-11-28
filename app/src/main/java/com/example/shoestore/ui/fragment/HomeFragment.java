@@ -99,6 +99,14 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
 
         if (btnNotif != null) {
             btnNotif.setOnClickListener(v -> {
+                boolean isLoggedIn = SharedPrefManager.getInstance(requireContext()).isLoggedIn();
+                if (!isLoggedIn) {
+                    android.widget.Toast.makeText(requireContext(), "Vui lòng đăng nhập để xem thông báo", android.widget.Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(), com.example.shoestore.ui.activity.LoginActivity.class);
+                    intent.putExtra(com.example.shoestore.ui.activity.LoginActivity.EXTRA_TARGET_ACTION, "NOTIFICATIONS");
+                    startActivity(intent);
+                    return;
+                }
                 Intent intent = new Intent(getContext(), NotificationActivity.class);
                 startActivity(intent);
             });

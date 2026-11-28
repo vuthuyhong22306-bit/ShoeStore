@@ -38,6 +38,7 @@ public class NotificationRepository {
     private final ExecutorService executor;
     private final Context context;
     private static final Set<String> shownNotificationIds = new HashSet<>();
+    private static final Set<String> deletedNotificationIds = new HashSet<>();
 
     public NotificationRepository(Application application) {
         this.context = application.getApplicationContext();
@@ -67,6 +68,11 @@ public class NotificationRepository {
                                 if (item.getId() == null || item.getId().isEmpty()) {
                                     item.setId(child.getKey() != null ? child.getKey() : String.valueOf(System.currentTimeMillis()));
                                 }
+
+                                if (deletedNotificationIds.contains(item.getId())) {
+                                    continue;
+                                }
+
                                 syncedList.add(item);
 
                                 // Check if notification is for current user/role and unread -> trigger Android System Notification!
@@ -130,14 +136,24 @@ public class NotificationRepository {
         String tUser = item.getTargetUserId();
         String tRole = item.getTargetRole();
 
-        if ("ALL".equalsIgnoreCase(tRole) || "ALL".equalsIgnoreCase(tUser)) return true;
-
-        if (tUser != null && !tUser.isEmpty() && tUser.equalsIgnoreCase(userId)) {
-            return true;
+        // Guest check: if userId <= 0 or "-1", guest gets NO private notifications
+        if (userId == null || userId.equals("-1") || userId.equals("0")) {
+            return false;
         }
 
-        if (tRole != null && !tRole.isEmpty() && tRole.equalsIgnoreCase(role)) {
-            return true;
+        // Customer rule: Customer ONLY sees notifications targeted to their exact userId
+        if ("CUSTOMER".equalsIgnoreCase(role)) {
+            return tUser != null && !tUser.isEmpty() && tUser.equalsIgnoreCase(userId);
+        }
+
+        // Staff rule: Staff sees notifications for STAFF role or targeted to their userId
+        if ("STAFF".equalsIgnoreCase(role) || "EMPLOYEE".equalsIgnoreCase(role)) {
+            return "STAFF".equalsIgnoreCase(tRole) || "EMPLOYEE".equalsIgnoreCase(tRole) || (tUser != null && tUser.equalsIgnoreCase(userId));
+        }
+
+        // Admin rule: Admin sees ADMIN or ALL notifications
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            return "ADMIN".equalsIgnoreCase(tRole) || "ALL".equalsIgnoreCase(tRole) || "ALL".equalsIgnoreCase(tUser) || (tUser != null && tUser.equalsIgnoreCase(userId));
         }
 
         return false;
@@ -298,12 +314,60 @@ public class NotificationRepository {
     }
 
     public void deleteNotification(String id) {
+        if (id == null) return;
+        deletedNotificationIds.add(id);
         executor.execute(() -> {
             notificationDao.deleteNotification(id);
+
+            // Delete from Firebase Realtime Database
             FirebaseDatabase.getInstance()
                     .getReference("notifications")
                     .child(id)
                     .removeValue();
+
+            // Delete from Cloud Firestore
+            try {
+                FirebaseFirestore.getInstance()
+                        .collection("notifications")
+                        .document(id)
+                        .delete();
+            } catch (Exception e) {
+                Log.e(TAG, "Error deleting notification from Firestore: " + e.getMessage());
+            }
+        });
+    }
+
+    public void deleteAllForUser(String userId, String role) {
+        if (userId == null) return;
+        executor.execute(() -> {
+            notificationDao.deleteAllForUser(userId, role != null ? role.toUpperCase() : "CUSTOMER");
+
+            // Remove user's notifications from Firebase Realtime Database
+            DatabaseReference notifRef = FirebaseDatabase.getInstance().getReference("notifications");
+            notifRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        try {
+                            NotificationItem item = child.getValue(NotificationItem.class);
+                            if (item != null && matchesUserOrRole(item, userId, role)) {
+                                deletedNotificationIds.add(item.getId());
+                                child.getRef().removeValue();
+
+                                try {
+                                    FirebaseFirestore.getInstance()
+                                            .collection("notifications")
+                                            .document(item.getId())
+                                            .delete();
+                                } catch (Exception ignored) {}
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
         });
     }
 }

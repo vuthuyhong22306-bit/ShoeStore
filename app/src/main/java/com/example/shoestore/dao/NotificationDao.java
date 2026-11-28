@@ -33,6 +33,9 @@ public interface NotificationDao {
     @Query("DELETE FROM notifications WHERE id = :id")
     void deleteNotification(String id);
 
+    @Query("DELETE FROM notifications WHERE (targetUserId = :userId OR targetRole = :role)")
+    void deleteAllForUser(String userId, String role);
+
     @Query("DELETE FROM notifications")
     void deleteAll();
 }
