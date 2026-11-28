@@ -22,6 +22,7 @@ import com.example.shoestore.model.Category;
 import com.example.shoestore.model.Product;
 import com.example.shoestore.repository.FavoriteRepository;
 import com.example.shoestore.repository.NotificationRepository;
+import com.example.shoestore.ui.activity.LoginActivity;
 import com.example.shoestore.ui.activity.NotificationActivity;
 import com.example.shoestore.ui.activity.ProductDetailActivity;
 import com.example.shoestore.ui.adapter.BannerAdapter;
@@ -76,19 +77,19 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
         adapter = new ProductAdapter(this);
         adapter.setFavoriteClickListener((product, isFavorite) -> {
             if (!SharedPrefManager.getInstance(requireContext()).isLoggedIn()) {
+                com.example.shoestore.utils.GuestDataManager.getInstance(requireContext())
+                        .savePendingAction("MAIN", "TOGGLE_FAVORITE", product.getId(), "", "", 1, 0);
                 android.widget.Toast.makeText(requireContext(), R.string.msg_please_login, android.widget.Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
                 return;
             }
             favoriteRepository.toggleFavorite(userId, product.getId());
         });
 
-        if (SharedPrefManager.getInstance(requireContext()).isLoggedIn() && userId > 0) {
-            favoriteRepository.getFavoriteProductIds(userId).observe(getViewLifecycleOwner(), favIds -> {
-                adapter.setFavoriteProductIds(favIds != null ? favIds : new ArrayList<>());
-            });
-        } else {
-            adapter.setFavoriteProductIds(new ArrayList<>());
-        }
+        favoriteRepository.getFavoriteProductIds(userId).observe(getViewLifecycleOwner(), favIds -> {
+            adapter.setFavoriteProductIds(favIds != null ? favIds : new ArrayList<>());
+        });
 
         if (rvProducts != null) rvProducts.setAdapter(adapter);
         if (viewPagerBanner != null) viewPagerBanner.setAdapter(new BannerAdapter());

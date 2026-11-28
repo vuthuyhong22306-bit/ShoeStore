@@ -18,8 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shoestore.R;
+import com.example.shoestore.model.CartItem;
 import com.example.shoestore.model.User;
+import com.example.shoestore.repository.CartRepository;
+import com.example.shoestore.repository.FavoriteRepository;
 import com.example.shoestore.repository.UserRepository;
+import com.example.shoestore.utils.GuestDataManager;
 import com.example.shoestore.utils.SharedPrefManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -137,7 +141,6 @@ public class LoginActivity extends AppCompatActivity {
 
         setLoading(true);
 
-        // 1. Tra cuu tren Firebase Realtime Database node "users"
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -187,7 +190,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
 
-                // 2. Hardcoded fallback check cho Admin & Staff
                 checkHardcodedOrRoomFallback(account, password);
             }
 
@@ -216,7 +218,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkHardcodedOrRoomFallback(String account, String password) {
-        // Check hardcoded Admin: admin / 123456
         if (("admin".equalsIgnoreCase(account) || "admin@shoestore.com".equalsIgnoreCase(account)) && "123456".equals(password)) {
             User adminUser = new User("Quản trị viên", account, password, "0123456789", "Hà Nội", "ADMIN");
             adminUser.setId(1);
@@ -225,7 +226,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Check hardcoded Staff: Nhanvien1 / 123123
         if (("Nhanvien1".equalsIgnoreCase(account) || "staff@shoestore.com".equalsIgnoreCase(account)) && "123123".equals(password)) {
             User staffUser = new User("Nguyễn Văn Staff", "staff@shoestore.com", password, "0987654321", "TP. HCM", "STAFF");
             staffUser.setId(2);
@@ -234,7 +234,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Fallback sang Room local database
         userRepository.loginCustomer(account, password, new UserRepository.OnUserResultCallback() {
             @Override
             public void onResult(User user) {
@@ -273,16 +272,75 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void completeLoginFlow(User user, String role) {
-        setLoading(false);
         boolean rememberMe = cbRememberMe != null && cbRememberMe.isChecked();
         SharedPrefManager.getInstance(LoginActivity.this).userLogin(user, rememberMe);
 
-        String displayRoleName = "Khách hàng";
-        if ("ADMIN".equalsIgnoreCase(role)) displayRoleName = "Quản trị viên";
-        else if ("STAFF".equalsIgnoreCase(role) || "EMPLOYEE".equalsIgnoreCase(role) || "NHANVIEN".equalsIgnoreCase(role)) displayRoleName = "Nhân viên";
+        if ("ADMIN".equalsIgnoreCase(role) || "STAFF".equalsIgnoreCase(role) || "EMPLOYEE".equalsIgnoreCase(role) || "NHANVIEN".equalsIgnoreCase(role)) {
+            setLoading(false);
+            Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+            navigateByRole(role);
+            finish();
+            return;
+        }
 
-        Toast.makeText(LoginActivity.this, "Đăng nhập thành công với vai trò " + displayRoleName + "!", Toast.LENGTH_SHORT).show();
-        navigateByRole(role);
+        processCustomerPendingAction(user);
+    }
+
+    private void processCustomerPendingAction(User user) {
+        setLoading(false);
+        Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+        GuestDataManager guestPref = GuestDataManager.getInstance(this);
+        String action = guestPref.getPendingAction();
+        String returnDest = guestPref.getReturnDestination();
+        int productId = guestPref.getPendingProductId();
+        String size = guestPref.getPendingSize();
+        String color = guestPref.getPendingColor();
+        int quantity = guestPref.getPendingQuantity();
+        double price = guestPref.getPendingPrice();
+
+        guestPref.clearPendingAction();
+
+        Intent intent;
+        if ("ADD_TO_CART".equalsIgnoreCase(action) && productId > 0) {
+            CartRepository cartRepository = new CartRepository(getApplication());
+            CartItem newItem = new CartItem(user.getId(), productId, size, color, quantity);
+            cartRepository.addToCart(newItem, 9999, null);
+
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(EXTRA_TARGET_TAB, R.id.nav_cart);
+        } else if ("BUY_NOW".equalsIgnoreCase(action) && productId > 0) {
+            intent = new Intent(this, CheckoutActivity.class);
+            intent.putExtra(CheckoutActivity.EXTRA_MODE, CheckoutActivity.MODE_BUY_NOW);
+            intent.putExtra(CheckoutActivity.EXTRA_PRODUCT_ID, productId);
+            intent.putExtra(CheckoutActivity.EXTRA_SIZE, size);
+            intent.putExtra(CheckoutActivity.EXTRA_COLOR, color);
+            intent.putExtra(CheckoutActivity.EXTRA_QUANTITY, quantity);
+            intent.putExtra(CheckoutActivity.EXTRA_PRICE, price);
+        } else if ("TOGGLE_FAVORITE".equalsIgnoreCase(action) && productId > 0) {
+            FavoriteRepository favoriteRepository = new FavoriteRepository(getApplication());
+            favoriteRepository.toggleFavorite(user.getId(), productId);
+
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(EXTRA_TARGET_TAB, R.id.nav_favorites);
+        } else if ("NAV_CART".equalsIgnoreCase(action)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(EXTRA_TARGET_TAB, R.id.nav_cart);
+        } else if ("NAV_FAVORITES".equalsIgnoreCase(action)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(EXTRA_TARGET_TAB, R.id.nav_favorites);
+        } else if ("NAV_ORDERS".equalsIgnoreCase(action) || "ORDERS".equalsIgnoreCase(returnDest)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(EXTRA_TARGET_TAB, R.id.nav_orders);
+        } else if ("NAV_ACCOUNT".equalsIgnoreCase(action) || "ACCOUNT".equalsIgnoreCase(returnDest)) {
+            intent = new Intent(this, CustomerMainActivity.class);
+            intent.putExtra(EXTRA_TARGET_TAB, R.id.nav_account);
+        } else {
+            intent = new Intent(this, CustomerMainActivity.class);
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
     }
 

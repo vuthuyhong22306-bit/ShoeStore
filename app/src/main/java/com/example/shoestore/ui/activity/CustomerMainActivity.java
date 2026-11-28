@@ -13,6 +13,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.shoestore.R;
 import com.example.shoestore.model.CartItem;
 import com.example.shoestore.repository.CartRepository;
+import com.example.shoestore.utils.GuestDataManager;
 import com.example.shoestore.utils.SharedPrefManager;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,17 +38,28 @@ public class CustomerMainActivity extends AppCompatActivity {
         }
 
         if (bottomNavigation != null) {
-            // Intercept BottomNavigation item selections for guest mode
             bottomNavigation.setOnItemSelectedListener(item -> {
                 int itemId = item.getItemId();
                 boolean isLoggedIn = SharedPrefManager.getInstance(this).isLoggedIn();
 
                 if (!isLoggedIn && itemId != R.id.nav_home) {
+                    String action = "NAV_CART";
+                    String dest = "MAIN";
+                    if (itemId == R.id.nav_favorites) {
+                        action = "NAV_FAVORITES";
+                    } else if (itemId == R.id.nav_orders) {
+                        action = "NAV_ORDERS";
+                        dest = "ORDERS";
+                    } else if (itemId == R.id.nav_account) {
+                        action = "NAV_ACCOUNT";
+                        dest = "ACCOUNT";
+                    }
+                    GuestDataManager.getInstance(this).savePendingAction(dest, action, -1, "", "", 1, 0);
                     Toast.makeText(this, R.string.msg_please_login, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
                     intent.putExtra(LoginActivity.EXTRA_TARGET_TAB, itemId);
                     startActivity(intent);
-                    return false; // Prevents highlighting the blocked tab
+                    return false;
                 }
 
                 if (navController != null) {

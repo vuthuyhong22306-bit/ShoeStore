@@ -392,6 +392,14 @@ public class CheckoutActivity extends AppCompatActivity {
             String color = getIntent().getStringExtra(EXTRA_COLOR);
             int quantity = getIntent().getIntExtra(EXTRA_QUANTITY, 1);
 
+            if (productId <= 0) {
+                com.example.shoestore.utils.GuestDataManager guestPref = com.example.shoestore.utils.GuestDataManager.getInstance(this);
+                productId = guestPref.getPendingProductId();
+                if (size == null || size.isEmpty()) size = guestPref.getPendingSize();
+                if (color == null || color.isEmpty()) color = guestPref.getPendingColor();
+                if (quantity <= 0) quantity = guestPref.getPendingQuantity();
+            }
+
             CartItem buyNowItem = new CartItem(userId, productId, size, color, quantity);
             cartItemsList = new ArrayList<>();
             cartItemsList.add(buyNowItem);
@@ -408,7 +416,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                 filtered.add(item);
                             }
                         }
-                        cartItemsList = filtered;
+                        cartItemsList = !filtered.isEmpty() ? filtered : items;
                     } else {
                         cartItemsList = items;
                     }
@@ -421,6 +429,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private void updateProductsList() {
         if (cartItemsList != null && productMap != null) {
             productAdapter.setData(cartItemsList, productMap);
+            productAdapter.notifyDataSetChanged();
             recalculateOrderSummary();
         }
     }
