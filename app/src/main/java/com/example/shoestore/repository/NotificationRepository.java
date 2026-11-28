@@ -232,12 +232,30 @@ public class NotificationRepository {
         if (order == null) return;
         long now = System.currentTimeMillis();
         String status = order.getStatus() != null ? order.getStatus() : "Cập nhật";
+        String orderCode = "#DH" + String.format(java.util.Locale.getDefault(), "%04d", order.getId());
+
+        String content;
+        if ("Đã xác nhận".equalsIgnoreCase(status) || "Chờ xác nhận".equalsIgnoreCase(status)) {
+            content = "Đơn hàng " + orderCode + " của bạn đã được xác nhận.";
+        } else if ("Đang chuẩn bị hàng".equalsIgnoreCase(status) || "Đang chuẩn bị".equalsIgnoreCase(status)) {
+            content = "Đơn hàng " + orderCode + " đang được chuẩn bị.";
+        } else if ("Đang giao".equalsIgnoreCase(status) || "Đang giao hàng".equalsIgnoreCase(status)) {
+            content = "Đơn hàng " + orderCode + " đang được giao đến bạn.";
+        } else if ("Đã hoàn thành".equalsIgnoreCase(status) || "Giao hàng thành công".equalsIgnoreCase(status)) {
+            content = "Đơn hàng " + orderCode + " đã được giao thành công. Cảm ơn bạn đã mua sắm tại ShoeStore!";
+        } else if ("Đã hủy".equalsIgnoreCase(status) || "Đã từ chối".equalsIgnoreCase(status)) {
+            content = "Đơn hàng " + orderCode + " của bạn đã bị hủy.";
+        } else if ("Yêu cầu trả hàng".equalsIgnoreCase(status)) {
+            content = "Yêu cầu trả hàng cho đơn " + orderCode + " đã được ghi nhận.";
+        } else {
+            content = "Đơn hàng " + orderCode + " đã chuyển sang trạng thái: " + status + ".";
+        }
 
         // 1. Notification for Customer
         NotificationItem customerNotif = new NotificationItem(
                 "notif_cust_status_" + order.getId() + "_" + now,
-                "Cập nhật đơn hàng #DH" + String.format("%04d", order.getId()),
-                "Đơn hàng của bạn đã chuyển sang trạng thái: " + status + ".",
+                "Cập nhật trạng thái đơn hàng",
+                content,
                 order.getId(),
                 "CUSTOMER",
                 String.valueOf(order.getUserId()),
@@ -250,8 +268,8 @@ public class NotificationRepository {
         // 2. Notification for Admin
         NotificationItem adminNotif = new NotificationItem(
                 "notif_admin_status_" + order.getId() + "_" + now,
-                "Đơn hàng #DH" + String.format("%04d", order.getId()) + " được cập nhật",
-                "Trạng thái đơn hàng #" + order.getId() + " vừa được chuyển sang: " + status + ".",
+                "Đơn hàng " + orderCode + " được cập nhật",
+                "Trạng thái đơn hàng " + orderCode + " vừa được chuyển sang: " + status + ".",
                 order.getId(),
                 "ADMIN",
                 "",
