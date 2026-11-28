@@ -17,10 +17,12 @@ import com.example.shoestore.dao.OrderDetailDao;
 import com.example.shoestore.dao.ProductDao;
 import com.example.shoestore.dao.ReviewDao;
 import com.example.shoestore.dao.UserDao;
+import com.example.shoestore.dao.DeletedNotificationDao;
 import com.example.shoestore.dao.NotificationDao;
 import com.example.shoestore.model.Address;
 import com.example.shoestore.model.CartItem;
 import com.example.shoestore.model.Category;
+import com.example.shoestore.model.DeletedNotification;
 import com.example.shoestore.model.Favorite;
 import com.example.shoestore.model.NotificationItem;
 import com.example.shoestore.model.Order;
@@ -32,7 +34,7 @@ import com.example.shoestore.model.User;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Category.class, Product.class, CartItem.class, Order.class, OrderDetail.class, Address.class, Favorite.class, Review.class, NotificationItem.class}, version = 10, exportSchema = false)
+@Database(entities = {User.class, Category.class, Product.class, CartItem.class, Order.class, OrderDetail.class, Address.class, Favorite.class, Review.class, NotificationItem.class, DeletedNotification.class}, version = 11, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
@@ -45,6 +47,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract FavoriteDao favoriteDao();
     public abstract ReviewDao reviewDao();
     public abstract NotificationDao notificationDao();
+    public abstract DeletedNotificationDao deletedNotificationDao();
 
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;

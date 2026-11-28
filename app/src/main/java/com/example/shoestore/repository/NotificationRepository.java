@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 public class NotificationRepository {
     private static final String TAG = "NotificationRepository";
     private final NotificationDao notificationDao;
+    private final com.example.shoestore.dao.DeletedNotificationDao deletedNotificationDao;
     private final ExecutorService executor;
     private final Context context;
     private static final Set<String> shownNotificationIds = new HashSet<>();
@@ -44,7 +45,19 @@ public class NotificationRepository {
         this.context = application.getApplicationContext();
         AppDatabase db = AppDatabase.getDatabase(application);
         this.notificationDao = db.notificationDao();
+        this.deletedNotificationDao = db.deletedNotificationDao();
         this.executor = AppDatabase.databaseWriteExecutor;
+
+        executor.execute(() -> {
+            try {
+                List<String> persistedDeletedIds = deletedNotificationDao.getAllDeletedIdsSync();
+                if (persistedDeletedIds != null) {
+                    deletedNotificationIds.addAll(persistedDeletedIds);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading deleted IDs: " + e.getMessage());
+            }
+        });
 
         initFirebaseSync();
     }
@@ -317,6 +330,10 @@ public class NotificationRepository {
         if (id == null) return;
         deletedNotificationIds.add(id);
         executor.execute(() -> {
+            try {
+                deletedNotificationDao.insert(new com.example.shoestore.model.DeletedNotification(id, "", System.currentTimeMillis()));
+            } catch (Exception ignored) {}
+
             notificationDao.deleteNotification(id);
 
             // Delete from Firebase Realtime Database
@@ -352,6 +369,10 @@ public class NotificationRepository {
                             NotificationItem item = child.getValue(NotificationItem.class);
                             if (item != null && matchesUserOrRole(item, userId, role)) {
                                 deletedNotificationIds.add(item.getId());
+                                try {
+                                    deletedNotificationDao.insert(new com.example.shoestore.model.DeletedNotification(item.getId(), userId, System.currentTimeMillis()));
+                                } catch (Exception ignored) {}
+
                                 child.getRef().removeValue();
 
                                 try {
